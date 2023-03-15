@@ -1,4 +1,6 @@
 def call(Map config = [:]) {
+
+  echo "runpipes: ${config}"
   pipeline {
     agent none
       stages {
