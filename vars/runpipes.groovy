@@ -22,7 +22,7 @@ def call(Map config = [:]) {
 		    stage('Build RPM') {
                         steps {
 			    runstuff(project:"${config.project}", branch:"${config.branch}", makeopts:"rpm")
-#  		            archiveArtifacts artifacts: "${config.project}*.rpm, x86_64/*rpm", fingerprint: false
+//  		            archiveArtifacts artifacts: "${config.project}*.rpm, x86_64/*rpm", fingerprint: false
 		    }
                 }
 	    }
