@@ -1,7 +1,7 @@
 def call(Map config = [:]) {
   pipeline {
-   agent none
-    stages {
+    agent none
+      stages {
         stage('Build and Test') {
             matrix {
                 agent {
@@ -22,17 +22,17 @@ def call(Map config = [:]) {
 		    stage('Build RPM') {
                         steps {
 			    runstuff(project:"${config.project}", branch:"${config.branch}", makeopts:"rpm")
-  		            archiveArtifacts artifacts: '${config.project}*.rpm, x86_64/*rpm', fingerprint: false
+  		            archiveArtifacts artifacts: "${config.project}*.rpm, x86_64/*rpm", fingerprint: false
 		    }
                 }
-		}
-                post {
-                    always {
-		        sh "uname -r"
-                    }
-                }
+	    }
+            post {
+                always {
+	        sh "uname -a"
             }
+          }
         }
+      }
     }
   }
 }
