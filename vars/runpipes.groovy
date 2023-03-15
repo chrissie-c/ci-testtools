@@ -1,6 +1,6 @@
 def call(Map config = [:]) {
-pipeline {
- agent none
+  pipeline {
+   agent none
     stages {
         stage('Build and Test') {
             matrix {
@@ -17,12 +17,13 @@ pipeline {
                     stage('Build & Test') {
                         steps {
 			    runstuff(project:"CCTest", branch:"main")
+  		            archiveArtifacts artifacts: 'tests/test-suite.log', fingerprint: true
 			}
                     }
                 }
                 post {
                     always {
-		        archiveArtifacts artifacts: 'tests/test-suite.log', fingerprint: true
+		        sh "uname -r"
                     }
                 }
             }
