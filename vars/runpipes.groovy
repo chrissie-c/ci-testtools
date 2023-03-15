@@ -1,6 +1,9 @@
-def call(Map config = [:]) {
+def call(Map params = [:]) {
 
-  echo "runpipes: ${config}"
+  echo "runpipes: params = ${params}"
+  def params = config
+  echo "runpipes: config = ${config}"
+  
   pipeline {
     agent none
       stages {
