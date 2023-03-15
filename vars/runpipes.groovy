@@ -25,6 +25,7 @@ def call(Map config = [:]) {
   		            archiveArtifacts artifacts: '${config.project}*.rpm, x86_64/*rpm', fingerprint: false
 		    }
                 }
+		}
                 post {
                     always {
 		        sh "uname -r"
@@ -34,5 +35,4 @@ def call(Map config = [:]) {
         }
     }
   }
-}
 }
