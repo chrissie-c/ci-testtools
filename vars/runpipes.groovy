@@ -1,5 +1,6 @@
 def call(Map config = [:]) {
-    agent none
+pipeline {
+ agent none
     stages {
         stage('Build and Test') {
             matrix {
@@ -27,4 +28,5 @@ def call(Map config = [:]) {
             }
         }
     }
+  }
 }
