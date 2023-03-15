@@ -16,10 +16,14 @@ def call(Map config = [:]) {
                 stages {
                     stage('Build & Test') {
                         steps {
-			    runstuff(project:"CCTest", branch:"main")
-  		            archiveArtifacts artifacts: 'tests/test-suite.log', fingerprint: true
+			    runstuff(project:${config.project}, branch:${config.branch}, makeopts:"all test")
 			}
                     }
+		    stage('Build RPM') {
+                        steps {
+			    runstuff(project:${config.project}, branch:${config.branch}, makeopts:"rpm")
+  		            archiveArtifacts artifacts: '${config.project}*.rpm, x86_64/*rpm', fingerprint: false
+		    }
                 }
                 post {
                     always {
