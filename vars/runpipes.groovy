@@ -1,8 +1,4 @@
-def call(Map params = [:]) {
-
-  echo "runpipes: params = ${params}"
-  def pipelineParams = params
-  echo "runpipes: pipelineParams = ${pipelineParams}"
+def call(Map pipelineParams = [:]) {
   
   pipeline {
     agent none
