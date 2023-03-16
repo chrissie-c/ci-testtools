@@ -9,8 +9,8 @@ def call(Map params = [:]) {
       stages {
         stage('Build and Test') {
 	    environment {
-	    		PROJECT = pipelineParams.project
-			BRANCH = pipelineParams.branch
+	    		PROJECT = "${pipelineParams.project}"
+			BRANCH = "${pipelineParams.branch}"
 	    }
             matrix {
                 agent {
