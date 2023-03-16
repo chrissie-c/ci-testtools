@@ -1,7 +1,7 @@
 def call(Map params = [:]) {
 
   echo "runpipes: params = ${params}"
-  def params = config
+  def config = params
   echo "runpipes: config = ${config}"
   
   pipeline {
