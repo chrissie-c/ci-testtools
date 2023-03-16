@@ -24,8 +24,10 @@ def call(Map params = [:]) {
                 }
                 stages {
                     stage('Prep') {
-		        sh "sh autogen.sh"
-			sh "./configure"
+		        steps {
+		            sh "sh autogen.sh"
+			    sh "./configure"
+			}
 		    }
                     stage('Build') {
                         steps {
