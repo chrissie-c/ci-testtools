@@ -19,7 +19,7 @@ def call(Map params = [:]) {
                 axes {
                     axis {
                         name 'PLATFORM'
-                        values 'fedora', 'debian'
+                        values 'fedora', 'debian', 'rhel'
                     }
                 }
                 stages {
