@@ -8,6 +8,10 @@ def call(Map params = [:]) {
     agent none
       stages {
         stage('Build and Test') {
+	    environment {
+	    		PROJECT = pipelineParams.project
+			BRANCH = pipelineParams.branch
+	    }
             matrix {
                 agent {
                     label "${PLATFORM}"
@@ -21,13 +25,13 @@ def call(Map params = [:]) {
                 stages {
                     stage('Build & Test') {
                         steps {
-			    runstuff(project:"${pipelineParams.project}", branch:"${pipelineParams.branch}", makeopts:"all test")
+			    runstuff(project:"$PROJECT", branch:"$BRANCH", makeopts:"all test")
 			}
                     }
 		    stage('Build RPM') {
                         steps {
-			    runstuff(project:"${pipelineParams.project}", branch:"${pipelineParams.branch}", makeopts:"rpm")
-  		            archiveArtifacts artifacts: "${pipelineParams.project}*.rpm, x86_64/*rpm", fingerprint: false
+			    runstuff(project:"$PROJECT", branch:"$BRANCH", makeopts:"rpm")
+  		            archiveArtifacts artifacts: "$PROJECT*.rpm, x86_64/*rpm", fingerprint: false
 		    }
                 }
 	    }
