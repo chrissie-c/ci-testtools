@@ -1,8 +1,8 @@
 def call(Map params = [:]) {
 
   echo "runpipes: params = ${params}"
-  def config = params
-  echo "runpipes: config = ${config}"
+  def pipelineParams = params
+  echo "runpipes: pipelineParams = ${pipelineParams}"
   
   pipeline {
     agent none
@@ -21,13 +21,13 @@ def call(Map params = [:]) {
                 stages {
                     stage('Build & Test') {
                         steps {
-			    runstuff(project:"${config.project}", branch:"${config.branch}", makeopts:"all test")
+			    runstuff(project:"${pipelineParams.project}", branch:"${pipelineParams.branch}", makeopts:"all test")
 			}
                     }
 		    stage('Build RPM') {
                         steps {
-			    runstuff(project:"${config.project}", branch:"${config.branch}", makeopts:"rpm")
-  		            archiveArtifacts artifacts: "${config.project}*.rpm, x86_64/*rpm", fingerprint: false
+			    runstuff(project:"${pipelineParams.project}", branch:"${pipelineParams.branch}", makeopts:"rpm")
+  		            archiveArtifacts artifacts: "${pipelineParams.project}*.rpm, x86_64/*rpm", fingerprint: false
 		    }
                 }
 	    }
