@@ -23,15 +23,24 @@ def call(Map params = [:]) {
                     }
                 }
                 stages {
-                    stage('Build & Test') {
+                    stage('Prep') {
+		        sh "sh autogen.sh"
+			sh "./configure"
+		    }
+                    stage('Build') {
                         steps {
-			    runstuff(project:"$PROJECT", branch:"$BRANCH", makeopts:"all check")
+			    runstuff(project:"$PROJECT", branch:"$BRANCH", makeopts:"check")
 			}
                     }
-		    stage('Build RPM') {
+                    stage('Test') {
                         steps {
-			    runstuff(project:"$PROJECT", branch:"$BRANCH", makeopts:"rpm")
-  		            archiveArtifacts artifacts: "$PROJECT*.rpm, x86_64/*rpm", fingerprint: false
+			    runstuff(project:"$PROJECT", branch:"$BRANCH", makeopts:"check")
+			}
+                    }
+		    stage('Build tarball') {
+                        steps {
+			    runstuff(project:"$PROJECT", branch:"$BRANCH", makeopts:"dist")
+  		            archiveArtifacts artifacts: "$PROJECT*.tar.gz, $PROJECT*.tar.xz", fingerprint: false
 		    }
                 }
 	    }
