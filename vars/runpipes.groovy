@@ -25,7 +25,7 @@ def call(Map params = [:]) {
                 stages {
                     stage('Build & Test') {
                         steps {
-			    runstuff(project:"$PROJECT", branch:"$BRANCH", makeopts:"all test")
+			    runstuff(project:"$PROJECT", branch:"$BRANCH", makeopts:"all check")
 			}
                     }
 		    stage('Build RPM') {
