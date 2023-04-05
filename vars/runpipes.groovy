@@ -27,7 +27,7 @@ def call(Map pipelineParams = [:]) {
 		    }
                     stage('Build') {
                         steps {
-			    runstuff(project:"$PROJECT", branch:"$BRANCH", makeopts:"check")
+			    runstuff(project:"$PROJECT", branch:"$BRANCH", makeopts:"all")
 			}
                     }
                     stage('Test') {
