@@ -1,16 +1,6 @@
 pipeline {
-    agent fedora37
-    environment {
-	when {
-	    environment name: 'MODE', value: 'development'
-	}
-	CONFIG_FLAGS = ''
-    }
-    environment {
-	when {
-	    environment name: 'MODE', value: 'production'
-	}
-	CONFIG_FLAGS = '--enable-debug'
+    agent {
+	label 'fedora37'
     }
     stages {
 	stage('Build and test') {
@@ -23,7 +13,7 @@ pipeline {
                 }
                 stage('Build') {
                     steps {
-                        sh 'make $CONFIG_FLAGS'
+                        sh 'make $THISISSTRING'
                     }
                 }
                 stage('Test') {
