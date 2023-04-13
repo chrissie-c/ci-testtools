@@ -7,6 +7,7 @@ pipeline {
 	    stages {
                 stage('Prep') {
                     steps {
+			sh 'PKG_CONFIG_PATH=/srv/knet/origin/main/lib/pkgconfig/'
                         sh 'sh autogen.sh'
                         sh './configure'
                     }
