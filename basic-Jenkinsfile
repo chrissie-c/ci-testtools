@@ -7,14 +7,13 @@ pipeline {
 	    stages {
                 stage('Prep') {
                     steps {
-			sh 'export PKG_CONFIG_PATH=/srv/knet/origin/main/lib/pkgconfig/'
+			sh "echo $THISISSTRING"
                         sh 'sh autogen.sh'
-                        sh './configure'
+                        sh 'PKG_CONFIG_PATH=/srv/knet/origin/main/lib/pkgconfig/ ./configure'
                     }
                 }
                 stage('Build') {
                     steps {
-                        sh "echo $THISISSTRING"
 			sh 'make all'
                     }
                 }
