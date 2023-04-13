@@ -14,8 +14,8 @@ pipeline {
                 }
                 stage('Build') {
                     steps {
-                        sh 'echo $THISISSTRING'
-			sh 'make all"
+                        sh "echo $THISISSTRING"
+			sh 'make all'
                     }
                 }
                 stage('Test') {
