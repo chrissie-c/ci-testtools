@@ -1,6 +1,9 @@
 pipeline {
+    parameters {
+        string(name: 'NODES', defaultValue: 'fedora37', description: 'Set of nodes(labels) to run on')
+    }
     agent {
-	label 'fedora37'
+	label "$params.NODES"
     }
     stages {
 	stage('Build and test') {
