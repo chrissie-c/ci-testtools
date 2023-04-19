@@ -6,10 +6,6 @@ pipeline {
 	label "$params.NODES"
     }
 
-    if(isPRBuild()) {
-	sh 'echo "THIS IS A PR BUILD"'
-	sh "echo $env.CHANGE_ID"
-    }
     stages {
 	stage('Build and test') {
 	    stages {
