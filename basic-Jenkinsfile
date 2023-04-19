@@ -25,9 +25,9 @@ pipeline {
 			changeRequest author: 'fabbione'
 		    }
 		}
-		// Not really a failure, but I'm testing
-		setBuildStatus("Build not run", "FAILURE");
 	    }
+	    // Not really a failure, but I'm testing
+	    setBuildStatus("Build not run", "FAILURE");
 	}
 	stage('Build and test') {
 	    when {
