@@ -7,6 +7,12 @@ pipeline {
     }
 
     stages {
+	when {
+	    anyOf {
+		changeRequest author: 'chrissie-c'
+		changeRequest author: 'fabbione'
+	    }
+	}
 	stage('Build and test') {
 	    stages {
                 stage('Prep') {
