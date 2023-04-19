@@ -1,6 +1,6 @@
 pipeline {
     parameters {
-        string(name: 'NODES', defaultValue: 'fedora37', description: 'Set of nodes to run on')
+        string(name: 'NODES', defaultValue: 'fedora37', description: 'label of node to run on')
     }
     agent {
 	label "$params.NODES"

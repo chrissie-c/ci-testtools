@@ -5,11 +5,17 @@ pipeline {
     agent {
 	label "$params.NODES"
     }
+
+    if(isPRBuild()) {
+	sh 'echo "THIS IS A PR BUILD"'
+	sh "echo $env.CHANGE_ID"
+    }
     stages {
 	stage('Build and test') {
 	    stages {
                 stage('Prep') {
                     steps {
+			sh "echo $env"
                         sh 'sh autogen.sh'
                         sh 'PKG_CONFIG_PATH=/srv/knet/origin/main/lib/pkgconfig/ ./configure'
                     }
