@@ -28,8 +28,10 @@ pipeline {
 	    }
 	    // Not really a failure, but I'm testing
 	    stages {
-		steps {
-		    setBuildStatus("Build not run", "FAILURE");
+		stage('notify') {
+		    steps {
+			setBuildStatus("Build not run", "FAILURE");
+		    }
 		}
 	    }
 	}
