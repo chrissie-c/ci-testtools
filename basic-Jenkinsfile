@@ -17,13 +17,7 @@ pipeline {
     }
 
     stages {
-	stage('Build and test') {
-	    when {
-		anyOf {
-		    changeRequest author: 'chrissie-c'
-		    changeRequest author: 'fabbione'
-		}
-	    }
+	stage('Not allowed') {
 	    when {
 		not {
 		    anyOf {
@@ -32,7 +26,14 @@ pipeline {
 		    }
 		}
 		// Not really a failure, but I'm testing
-		setBuildStatus("Build not run", "FAILURE");		
+		setBuildStatus("Build not run", "FAILURE");
+	}
+	stage('Build and test') {
+	    when {
+		anyOf {
+		    changeRequest author: 'chrissie-c'
+		    changeRequest author: 'fabbione'
+		}
 	    }
 	    stages {
                 stage('Prep') {
