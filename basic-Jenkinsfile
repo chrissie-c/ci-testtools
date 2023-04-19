@@ -24,6 +24,14 @@ pipeline {
 		    changeRequest author: 'fabbione'
 		}
 	    }
+	    when not {
+		anyOf {
+		    changeRequest author: 'chrissie-c'
+		    changeRequest author: 'fabbione'
+		}
+		// Not really a failure, but I'm testing
+		setBuildStatus("Build not run", "FAILURE");		
+	    }
 	    stages {
                 stage('Prep') {
                     steps {
@@ -48,17 +56,6 @@ pipeline {
                     }
                 }
             }
-	}
-    }
-    post {
-	when not {
-	    anyOf {
-		changeRequest author: 'chrissie-c'
-		changeRequest author: 'fabbione'
-	    }
-	}
-	success {
-	    setBuildStatus("Build not run", "FAILURE");
 	}
     }
 }
