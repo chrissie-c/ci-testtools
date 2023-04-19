@@ -27,6 +27,7 @@ pipeline {
 		}
 		// Not really a failure, but I'm testing
 		setBuildStatus("Build not run", "FAILURE");
+	    }
 	}
 	stage('Build and test') {
 	    when {
