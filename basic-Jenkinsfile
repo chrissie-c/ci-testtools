@@ -29,7 +29,7 @@ boolean getAuthCheck()
 	return true;
     }
     // TODO: input
-    result = input(message: "Is this safe to run?", ok: "OK", parameters: "Yes, No",
+    result = input(message: "Is this safe to run?", ok: "OK", parameters: ["Yes, No"],
 		   submitterParameter: 'submitter')
     echo "${result} from ${submitter}"
     return false;
