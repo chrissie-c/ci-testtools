@@ -24,6 +24,7 @@ pipeline {
 			changeRequest author: 'chrissie-c'
 			changeRequest author: 'fabbione'
 		    }
+		    triggeredBy 'GitLabWebHookCause'		    
 		}
 	    }
 	    // Not really a failure, but I'm testing
@@ -41,6 +42,9 @@ pipeline {
 		anyOf {
 		    changeRequest author: 'chrissie-c'
 		    changeRequest author: 'fabbione'
+		}
+		not {
+		    triggeredBy 'GitLabWebHookCause'
 		}
 	    }
 	    stages {
