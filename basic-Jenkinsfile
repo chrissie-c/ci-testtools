@@ -10,8 +10,8 @@ void setBuildStatus(String message, String state) {
 
 boolean getAuthCheck()
 {
-    branchEvent = currentBuild.getBuildCauses(jenkins.branch.BranchEventCause);
-    cause = currentBuild.getBuildCauses(hudson.model.Cause);
+    branchEvent = currentBuild.getBuildCauses('jenkins.branch.BranchEventCause');
+    cause = currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause');
 
     echo "getAuthCheck. branchEvent = ${branchEvent}"
     echo "getAuthCheck. cause = ${cause}"
