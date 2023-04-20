@@ -39,7 +39,7 @@ pipeline {
     stages {
 	stage('Not allowed') {
 	    when {
-		EXPRESSION { authcheck != true }
+		expression { authcheck != true }
 	    }
 	    // Not really a failure, but I'm testing
 	    stages {
@@ -54,7 +54,7 @@ pipeline {
 	}
 	stage('Build and test') {
 	    when {
-		EXPRESSION { authcheck == true }
+		expression { authcheck == true }
 	    }
 	    stages {
                 stage('Prep') {
