@@ -22,13 +22,13 @@ boolean getAuthCheck()
 	// Triggered internally
 	return true;
     }
-    // Caused by a github(etc) PR
-    // Check users
+    // Caused by a github(etc) PR. Check users
     if ((env.CHANGE_AUTHOR == 'chrissie-c') ||
 	(env.CHANGE_AUTHOR == 'fabbione')) {
 	return true;
     }
-    // TODO: input
+
+    // Unknown user - get approval to run this
     echo "Approval needed from Jenkins administrator"
     result = input(message: "Is this safe to run?", ok: "OK",
 		   parameters: [
@@ -38,9 +38,10 @@ boolean getAuthCheck()
              description: 'Menu - select box option']],
 		   submitterParameter: 'submitter')
     println(result);
-    
-    echo "${input1} from ${submitter}";
-    if (input1 == "yes") {
+
+    is_ok = result['input1']
+    echo "${is_ok} from ${submitter}";
+    if (is_ok == "yes") {
 	return true;
     } else {
 	return false;
