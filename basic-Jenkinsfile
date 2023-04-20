@@ -31,21 +31,11 @@ boolean getAuthCheck()
     // Unknown user - get approval to run this
     echo "Approval needed from Jenkins administrator"
     result = input(message: "Is this safe to run?", ok: "OK",
-		   parameters: [
-            [$class: 'ChoiceParameterDefinition',
-             choices: ['no','yes'].join('\n'),
-             name: 'input1',
-             description: 'Menu - select box option']],
 		   submitterParameter: 'submitter')
     println(result);
 
-    is_ok = result['input1'];
-    echo "${is_ok} from ${submitter}";
-    if (is_ok == "yes") {
-	return true;
-    } else {
-	return false;
-    }
+    // If we get this far then it's been approved. Abort is the other option!
+    return true;
 }
 
 def authcheck = getAuthCheck()
