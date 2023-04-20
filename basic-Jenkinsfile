@@ -33,16 +33,20 @@ boolean getAuthCheck()
     return false;
 }
 
-def authcheck = getAuthCheck()
+String[] getNodes(String: nodelist)
+{
+    nodelist.split(" ")
+}
 
-def causes = currentBuild.getBuildCauses()
+def authcheck = getAuthCheck()
+def nodelist = makeNodes(params.NODES)
 
 pipeline {
     parameters {
         string(name: 'NODES', defaultValue: 'fedora37', description: 'Set of nodes(labels) to run on')
     }
     agent {
-	label "$params.NODES"
+	label "$nodelist"
     }
 
     stages {
@@ -56,7 +60,6 @@ pipeline {
 		    steps {
 			sh "env"
 			sh "echo authcheck: ${authcheck}"
-			sh "echo CAUSES: ${causes}"
 			setBuildStatus("Build not run", "FAILURE");
 		    }
 		}
@@ -71,7 +74,6 @@ pipeline {
                     steps {
 			sh "env"
 			sh "echo authcheck: ${authcheck}"
-			sh "echo CAUSES: ${causes}"
                         sh 'sh autogen.sh'
                         sh 'PKG_CONFIG_PATH=/srv/knet/origin/main/lib/pkgconfig/ ./configure'
                     }
