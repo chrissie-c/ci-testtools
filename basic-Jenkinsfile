@@ -57,20 +57,20 @@ pipeline {
 		}
 	    }
 	}
+	matrix {
+	    agent {
+		label "${PLATFORM}"
+	    }
+	    axes {
+		axis {
+		    name 'PLATFORM'
+		    values params.NODES
+		}
+	    }
+	}
 	stage('Build and test') {
 	    when {
 		expression { authcheck == true }
-	    }
-	    matrix {
-		agent {
-		    label "${PLATFORM}"
-		}
-		axes {
-		    axis {
-			name 'PLATFORM'
-			values params.NODES
-		    }
-		}
 	    }
 	    stages {
                 stage('Prep') {
