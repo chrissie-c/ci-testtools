@@ -31,7 +31,8 @@ boolean getAuthCheck()
     // TODO: input
     result = input(message: "Is this safe to run?", ok: "OK",
 		   submitterParameter: 'submitter')
-    echo "${result} from ${submitter}"
+    is_ok = result.TEST?:"no"
+    echo "${is_ok} from ${submitter}"
     return false;
 }
 
