@@ -20,16 +20,18 @@ boolean getAuthCheck()
 
     if (branchEvent.size().equals(0)) {
 	// Triggered internally
-	echo "returning true0"
 	return true;
     }
     // Caused by a github(etc) PR
     // Check users
     if ((env.CHANGE_AUTHOR == 'chrissie-c') ||
 	(env.CHANGE_AUTHOR == 'fabbione')) {
-	echo "returning true1"
 	return true;
     }
+    // TODO: input
+    result = input(message: "Is this safe to run?", ok: "OK", parameters: "Yes, No",
+		   submitterParameter: 'submitter')
+    echo "${result} from ${submitter}"
     return false;
 }
 
