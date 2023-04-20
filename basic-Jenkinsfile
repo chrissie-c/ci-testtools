@@ -35,11 +35,15 @@ boolean getAuthCheck()
              choices: ['no','yes'].join('\n'),
              name: 'input',
              description: 'Menu - select box option']
-        ]
+        ],
 		   submitterParameter: 'submitter')
-    is_ok = result.TEST?:"no"
+    is_ok = result
     echo "${is_ok} from ${submitter}"
-    return false;
+    if (is_ok = "yes") {
+	return true;
+    } else {
+	return false;
+    }
 }
 
 def authcheck = getAuthCheck()
