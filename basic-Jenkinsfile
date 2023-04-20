@@ -18,7 +18,7 @@ boolean getAuthCheck()
     echo "getAuthCheck. CHANGE_AUTHOR = ${env.CHANGE_AUTHOR}"
 
 
-    if (branchEvent == []) {
+    if (branchEvent.size().equals(0)) {
 	// Triggered internally
 	echo "returning true0"
 	return true;
