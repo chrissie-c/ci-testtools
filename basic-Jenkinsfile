@@ -39,7 +39,9 @@ pipeline {
     parameters {
         string(name: 'NODES', defaultValue: 'fedora37', description: 'Set of nodes(labels) to run on')
     }
-    agent none
+    agent {
+	label params.NODES
+    }
 
     stages {
 	stage('Not allowed') {
@@ -61,42 +63,31 @@ pipeline {
 	    when {
 		expression { authcheck == true }
 	    }
-	    matrix {
-		agent {
-		    label "${PLATFORM}"
-		}
-		axes {
-		    axis {
-			name 'PLATFORM'
-			values params.NODES
-		    }
-		}
-		stages {
-                    stage('Prep') {
-			steps {
-			    sh "env"
-			    sh "echo authcheck: ${authcheck}"
-                            sh 'sh autogen.sh'
-                            sh 'PKG_CONFIG_PATH=/srv/knet/origin/main/lib/pkgconfig/ ./configure'
-			}
+	    stages {
+                stage('Prep') {
+                    steps {
+			sh "env"
+			sh "echo authcheck: ${authcheck}"
+                        sh 'sh autogen.sh'
+                        sh 'PKG_CONFIG_PATH=/srv/knet/origin/main/lib/pkgconfig/ ./configure'
                     }
-                    stage('Build') {
-			steps {
-			    sh 'make all'
-			}
+                }
+                stage('Build') {
+                    steps {
+			sh 'make all'
                     }
-                    stage('Test') {
-			steps {
-			    sh 'make check'
-			}
+                }
+                stage('Test') {
+                    steps {
+			sh 'make check'
                     }
-                    stage('Dist Check') {
-			steps {
-			    sh 'make distcheck DISTCHECK_CONFIGURE_FLAGS="PKG_CONFIG_PATH=/srv/knet/origin/main/lib/pkgconfig/"'
-			}
+                }
+                stage('Dist Check') {
+                    steps {
+			sh 'make distcheck DISTCHECK_CONFIGURE_FLAGS="PKG_CONFIG_PATH=/srv/knet/origin/main/lib/pkgconfig/"'
                     }
-		}
-	    }
+                }
+            }
 	}
     }
 }
