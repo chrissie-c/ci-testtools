@@ -10,8 +10,8 @@ void setBuildStatus(String message, String state) {
 
 boolean getAuthCheck()
 {
-    branchEvent = currentBuild.getBuildCauses('jenkins.branch.BranchEventCause');
-    cause = currentBuild.getBuildCauses('hudson.model.Cause');
+    branchEvent = currentBuild.getBuildCauses(jenkins.branch.BranchEventCause);
+    cause = currentBuild.getBuildCauses(hudson.model.Cause);
 
     echo "getAuthCheck. branchEvent = ${branchEvent}"
     echo "getAuthCheck. cause = ${cause}"
@@ -50,6 +50,7 @@ pipeline {
 		stage('notify') {
 		    steps {
 			sh "env"
+			sh "echo authcheck: ${authcheck}"
 			sh "echo CAUSES: ${causes}"
 			setBuildStatus("Build not run", "FAILURE");
 		    }
@@ -64,6 +65,7 @@ pipeline {
                 stage('Prep') {
                     steps {
 			sh "env"
+			sh "echo authcheck: ${authcheck}"
 			sh "echo CAUSES: ${causes}"
                         sh 'sh autogen.sh'
                         sh 'PKG_CONFIG_PATH=/srv/knet/origin/main/lib/pkgconfig/ ./configure'
