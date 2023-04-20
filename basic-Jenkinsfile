@@ -39,8 +39,8 @@ boolean getAuthCheck()
 		   submitterParameter: 'submitter')
     println(result);
     
-    echo "${result.input1} from ${submitter}";
-    if (result.input1 == "yes") {
+    echo "${input1} from ${submitter}";
+    if (input1 == "yes") {
 	return true;
     } else {
 	return false;
