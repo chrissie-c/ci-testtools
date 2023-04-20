@@ -61,18 +61,18 @@ pipeline {
 	    when {
 		expression { authcheck == true }
 	    }
-	    matrix {
-		agent {
-		    label "${PLATFORM}"
-		}
-		axes {
-		    axis {
-			name 'PLATFORM'
-			values params.NODES
+	    stages {
+		matrix {
+		    agent {
+			label "${PLATFORM}"
+		    }
+		    axes {
+			axis {
+			    name 'PLATFORM'
+			    values params.NODES
+			}
 		    }
 		}
-	    }
-	    stages {
                 stage('Prep') {
                     steps {
 			sh "env"
