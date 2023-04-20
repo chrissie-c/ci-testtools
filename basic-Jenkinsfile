@@ -42,6 +42,17 @@ pipeline {
     agent none
 
     stages {
+	matrix {
+	    agent {
+		label "${PLATFORM}"
+	    }
+	    axes {
+		axis {
+		    name 'PLATFORM'
+		    values params.NODES
+		}
+	    }
+	}
 	stage('Not allowed') {
 	    when {
 		expression { authcheck != true }
@@ -62,17 +73,6 @@ pipeline {
 		expression { authcheck == true }
 	    }
 	    stages {
-		matrix {
-		    agent {
-			label "${PLATFORM}"
-		    }
-		    axes {
-			axis {
-			    name 'PLATFORM'
-			    values params.NODES
-			}
-		    }
-		}
                 stage('Prep') {
                     steps {
 			sh "env"
