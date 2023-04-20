@@ -37,7 +37,7 @@ boolean getAuthCheck()
              name: 'input1',
              description: 'Menu - select box option']],
 		   submitterParameter: 'submitter')
-    is_ok = result.input1;
+    println(result);
     echo "${is_ok} from ${submitter}";
     if (is_ok == "yes") {
 	return true;
