@@ -29,16 +29,16 @@ boolean getAuthCheck()
 	return true;
     }
     // TODO: input
+    echo "Approval needed from Jenkins administrator"
     result = input(message: "Is this safe to run?", ok: "OK",
 		   parameters: [
             [$class: 'ChoiceParameterDefinition',
              choices: ['no','yes'].join('\n'),
-             name: 'input',
-             description: 'Menu - select box option']
-        ],
+             name: 'input1',
+             description: 'Menu - select box option']],
 		   submitterParameter: 'submitter')
-    is_ok = result
-    echo "${is_ok} from ${submitter}"
+    is_ok = result.input1;
+    echo "${is_ok} from ${submitter}";
     if (is_ok == "yes") {
 	return true;
     } else {
