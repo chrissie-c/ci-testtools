@@ -8,6 +8,8 @@ void setBuildStatus(String message, String state) {
   ]);
 }
 
+def causes = currentBuild.getBuildCauses()
+
 pipeline {
     parameters {
         string(name: 'NODES', defaultValue: 'fedora37', description: 'Set of nodes(labels) to run on')
@@ -34,6 +36,7 @@ pipeline {
 		stage('notify') {
 		    steps {
 			sh "env"
+			sh "echo ${causes}"
 			setBuildStatus("Build not run", "FAILURE");
 		    }
 		}
@@ -53,6 +56,7 @@ pipeline {
                 stage('Prep') {
                     steps {
 			sh "env"
+			sh "echo ${causes}"
                         sh 'sh autogen.sh'
                         sh 'PKG_CONFIG_PATH=/srv/knet/origin/main/lib/pkgconfig/ ./configure'
                     }
