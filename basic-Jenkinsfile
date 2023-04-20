@@ -39,7 +39,7 @@ boolean getAuthCheck()
 		   submitterParameter: 'submitter')
     is_ok = result
     echo "${is_ok} from ${submitter}"
-    if (is_ok = "yes") {
+    if (is_ok == "yes") {
 	return true;
     } else {
 	return false;
