@@ -24,8 +24,8 @@ pipeline {
 			changeRequest author: 'chrissie-c'
 			changeRequest author: 'fabbione'
 		    }
-		    triggeredBy 'GitLabWebHookCause'		    
 		}
+		triggeredBy 'GitLabWebHookCause'
 	    }
 	    // Not really a failure, but I'm testing
 	    stages {
