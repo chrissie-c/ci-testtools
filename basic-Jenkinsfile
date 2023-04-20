@@ -8,6 +8,24 @@ void setBuildStatus(String message, String state) {
   ]);
 }
 
+boolean getAuthCheck()
+{
+    branchEvent = currentBuild.getBuildCauses('jenkins.branch.BranchEventCause');
+    cause = currentBuild.getBuildCauses('hudson.model.Cause');
+
+    // Caused by a gihub(etc) PR
+    if (branchEvent != null) {
+	// Check users
+	if ((env.CHANGE_AUTHOR == 'chrissie-c') ||
+	    (env.CHANGE_AUTHOR == 'fabbione')) {
+	    return true;
+	}
+	return false;
+    }
+}
+
+def authcheck = getAuthCheck()
+
 def causes = currentBuild.getBuildCauses()
 
 pipeline {
@@ -21,22 +39,14 @@ pipeline {
     stages {
 	stage('Not allowed') {
 	    when {
-		not {
-		    anyOf {
-			changeRequest author: 'chrissie-c'
-			changeRequest author: 'fabbione'
-		    }
-		}
-		not {
-		    triggeredBy 'GitHubWebHookCause'
-		}
+		EXPRESSION { authcheck != true }
 	    }
 	    // Not really a failure, but I'm testing
 	    stages {
 		stage('notify') {
 		    steps {
 			sh "env"
-			sh "echo ${causes}"
+			sh "echo CAUSES: ${causes}"
 			setBuildStatus("Build not run", "FAILURE");
 		    }
 		}
@@ -44,19 +54,13 @@ pipeline {
 	}
 	stage('Build and test') {
 	    when {
-		anyOf {
-		    changeRequest author: 'chrissie-c'
-		    changeRequest author: 'fabbione'
-		    not {
-			triggeredBy 'GitHubWebHookCause'
-		    }
-		}
+		EXPRESSION { authcheck == true }
 	    }
 	    stages {
                 stage('Prep') {
                     steps {
 			sh "env"
-			sh "echo ${causes}"
+			sh "echo CAUSES: ${causes}"
                         sh 'sh autogen.sh'
                         sh 'PKG_CONFIG_PATH=/srv/knet/origin/main/lib/pkgconfig/ ./configure'
                     }
