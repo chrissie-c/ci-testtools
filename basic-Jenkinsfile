@@ -46,7 +46,7 @@ pipeline {
         string(name: 'NODES', defaultValue: 'fedora37', description: 'Set of nodes(labels) to run on')
     }
     agent {
-	label ${nodelist}
+	label nodelist
     }
 
     stages {
