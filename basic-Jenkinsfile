@@ -17,7 +17,7 @@ boolean getAuthCheck()
     echo "getAuthCheck. cause = ${cause}"
 
     // Caused by a gihub(etc) PR
-    if (branchEvent == []) {
+    if (branchEvent != []) {
 	// Check users
 	if ((env.CHANGE_AUTHOR == 'chrissie-c') ||
 	    (env.CHANGE_AUTHOR == 'fabbione')) {
