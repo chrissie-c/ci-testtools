@@ -13,6 +13,9 @@ boolean getAuthCheck()
     branchEvent = currentBuild.getBuildCauses('jenkins.branch.BranchEventCause');
     cause = currentBuild.getBuildCauses('hudson.model.Cause');
 
+    echo "getAuthCheck. branchEvent = $branchEvent"
+    echo "getAuthCheck. cause = $cause"
+
     // Caused by a gihub(etc) PR
     if (branchEvent != null) {
 	// Check users
