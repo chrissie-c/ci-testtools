@@ -33,7 +33,7 @@ boolean getAuthCheck()
     return false;
 }
 
-String[] getNodes(String nodelist)
+String[] makeNodes(String nodelist)
 {
     nodelist.split(" ")
 }
