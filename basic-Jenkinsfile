@@ -30,6 +30,12 @@ boolean getAuthCheck()
     }
     // TODO: input
     result = input(message: "Is this safe to run?", ok: "OK",
+		   parameters: [
+            [$class: 'ChoiceParameterDefinition',
+             choices: ['no','yes'].join('\n'),
+             name: 'input',
+             description: 'Menu - select box option']
+        ]
 		   submitterParameter: 'submitter')
     is_ok = result.TEST?:"no"
     echo "${is_ok} from ${submitter}"
