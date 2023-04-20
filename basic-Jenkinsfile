@@ -17,20 +17,20 @@ boolean getAuthCheck()
     echo "getAuthCheck. cause = ${cause}"
     echo "getAuthCheck. CHANGE_AUTHOR = ${env.CHANGE_AUTHOR}"
 
-    // Caused by a github(etc) PR
-    if (branchEvent != []) {
-	// Check users
-	if ((env.CHANGE_AUTHOR == 'chrissie-c') ||
-	    (env.CHANGE_AUTHOR == 'fabbione')) {
-	    echo "returning true1"
-	    return true;
-	}
-	echo "returning false"
-	return false;
+
+    if (branchEvent == []) {
+	// Triggered internally
+	echo "returning true0"
+	return true;
     }
-    // Internal trigger
-    echo "returning true2"
-    return true;
+    // Caused by a github(etc) PR
+    // Check users
+    if ((env.CHANGE_AUTHOR == 'chrissie-c') ||
+	(env.CHANGE_AUTHOR == 'fabbione')) {
+	echo "returning true1"
+	return true;
+    }
+    return false;
 }
 
 def authcheck = getAuthCheck()
