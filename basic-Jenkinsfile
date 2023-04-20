@@ -1,7 +1,7 @@
 void setBuildStatus(String message, String state) {
   step([
       $class: "GitHubCommitStatusSetter",
-      reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://github.com/my-user/my-repo"],
+      reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://github.com/kronosnet/knet-ci-test.git"],
       contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "ci/jenkins/build-status"],
       errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
       statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ]
@@ -15,16 +15,21 @@ boolean getAuthCheck()
 
     echo "getAuthCheck. branchEvent = ${branchEvent}"
     echo "getAuthCheck. cause = ${cause}"
+    echo "getAuthCheck. CHANGE_AUTHOR = ${env.CHANGE_AUTHOR}"
 
-    // Caused by a gihub(etc) PR
+    // Caused by a github(etc) PR
     if (branchEvent != []) {
 	// Check users
 	if ((env.CHANGE_AUTHOR == 'chrissie-c') ||
 	    (env.CHANGE_AUTHOR == 'fabbione')) {
+	    echo "returning true1"
 	    return true;
 	}
+	echo "returning false"
 	return false;
     }
+    // Internal trigger
+    echo "returning true2"
     return true;
 }
 
