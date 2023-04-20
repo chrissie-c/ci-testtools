@@ -30,6 +30,7 @@ pipeline {
 	    stages {
 		stage('notify') {
 		    steps {
+			sh "env"
 			setBuildStatus("Build not run", "FAILURE");
 		    }
 		}
