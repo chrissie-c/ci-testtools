@@ -65,10 +65,8 @@ pipeline {
     stages {
 	stage('Check user') {
 	    steps {
-		node {
-		    script {
-			def authcheck = getAuthCheck()
-		    }
+		script {
+		    def authcheck = getAuthCheck()
 		}
 	    }
 	}
