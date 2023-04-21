@@ -75,7 +75,7 @@ pipeline {
 		axes {
 		    axis {
 			name 'PLATFORM'
-			values 'T-fedora37-86-64', 'T-debian-testing-x86-64', 'T-freebsd-x86-64'
+			values 'T-fedora37-x86-64', 'T-debian-testing-x86-64', 'T-freebsd-x86-64'
 		    }
 		    axis {
 			name 'FUNCTION'
