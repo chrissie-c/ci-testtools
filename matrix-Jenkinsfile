@@ -139,7 +139,7 @@ pipeline {
 			}
                     }
 		    // TODO: not sure how to make a failing non-voting jobs not faile the whole pipeline yet
-		    stage('Covscan') {
+		    stage('Coverity') {
 			when {
 			    expression { FUNCTION = "coverity" }
 			}
