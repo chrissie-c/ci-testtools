@@ -48,6 +48,7 @@ boolean getAuthCheck()
     return true;
 }
 
+def authcheck = false;
 
 pipeline {
     parameters {
@@ -66,7 +67,7 @@ pipeline {
 	stage('Check user') {
 	    steps {
 		script {
-		    def authcheck = getAuthCheck()
+		    authcheck = getAuthCheck()
 		}
 	    }
 	}
