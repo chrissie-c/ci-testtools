@@ -48,7 +48,6 @@ boolean getAuthCheck()
     return true;
 }
 
-def authcheck = getAuthCheck()
 
 pipeline {
     parameters {
@@ -64,6 +63,11 @@ pipeline {
     }
 
     stages {
+	stage('Check user') {
+	    node {
+		def authcheck = getAuthCheck()
+	    }
+	}
 	stage('Not allowed') {
 	    when {
 		expression { authcheck != true }
