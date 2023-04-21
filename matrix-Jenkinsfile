@@ -82,7 +82,7 @@ pipeline {
 			values 'voting', 'coverity', 'non-voting'
 		    }
 		}
-		exclude {
+		excludes {
 		    axis {
 			name 'PLATFORM'
 			values 'T-debian-testing-x86-64', 'T-freebsd-x86-64'
@@ -92,7 +92,7 @@ pipeline {
 			values 'non-voting'
 		    }
 		}
-		exclude {
+		excludes {
 		    axis {
 			name 'PLATFORM'
 			values 'T-rhel7-x86-64'
@@ -102,7 +102,7 @@ pipeline {
 			notValues 'coverity'
 		    }
 		}
-		exclude {
+		excludes {
 		    axis {
 			name 'PLATFORM'
 			values 'T-fedora37-x86-64' 'T-freebsd-x86-64'
@@ -146,7 +146,7 @@ pipeline {
 		    }
 		}
 		// non-voting jobs shouldn't cause a full failure
-		error {
+		post {
 		    when {
 			expression { FUNCTION = "non-voting" }
 		    }
