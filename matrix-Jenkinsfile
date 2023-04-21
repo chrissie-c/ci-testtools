@@ -66,8 +66,7 @@ pipeline {
     stages {
 	stage('Check user') {
 	    steps {
-		node {
-		    label "nobuild"
+		node('controller') {
 		    script {
 			authcheck = getAuthCheck()
 		    }
