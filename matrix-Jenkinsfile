@@ -149,12 +149,14 @@ pipeline {
 		}
 		// non-voting jobs shouldn't cause a full failure
 		post {
-		    when {
-			expression { FUNCTION = "non-voting" }
-		    }
-		    step {
-			script {
-			    currentBuild.rawBuild.@result = hudson.model.Result.SUCCESS
+		    failure {
+			stage {
+			    when {
+				expression { FUNCTION = "non-voting" }
+			    }
+			    script {
+				currentBuild.rawBuild.@result = hudson.model.Result.SUCCESS
+			    }
 			}
 		    }
 		}
