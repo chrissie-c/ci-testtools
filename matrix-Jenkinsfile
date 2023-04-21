@@ -93,8 +93,6 @@ pipeline {
 			    values 'non-voting'
 			}
 		    }
-		}
-		excludes {
 		    exclude {
 			axis {
 			    name 'PLATFORM'
@@ -105,8 +103,6 @@ pipeline {
 			    notValues 'coverity'
 			}
 		    }
-		}
-		excludes {
 		    exclude {
 			axis {
 			    name 'PLATFORM'
