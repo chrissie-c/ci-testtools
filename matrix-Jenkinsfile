@@ -1,0 +1,158 @@
+void setBuildStatus(String message, String state) {
+  step([
+      $class: "GitHubCommitStatusSetter",
+      reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://github.com/kronosnet/knet-ci-test.git"],
+      contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "ci/jenkins/build-status"],
+      errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
+      statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ]
+  ]);
+}
+
+boolean getAuthCheck()
+{
+    branchEvent = currentBuild.getBuildCauses('jenkins.branch.BranchEventCause');
+    cause = currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause');
+
+    echo "getAuthCheck. branchEvent = ${branchEvent}"
+    echo "getAuthCheck. cause = ${cause}"
+    echo "getAuthCheck. CHANGE_AUTHOR = ${env.CHANGE_AUTHOR}"
+
+    if (branchEvent.size().equals(0)) {
+	// Triggered internally
+	return true;
+    }
+    // Caused by a github(etc) PR. Check users
+    if ((env.CHANGE_AUTHOR == 'chrissie-c') ||
+	(env.CHANGE_AUTHOR == 'fabbione')) {
+	return true;
+    }
+
+    // Unknown user - get approval to run this
+    echo "Approval needed from Jenkins administrator"
+    result = input(message: "Is this safe to run?", ok: "OK",
+		   submitterParameter: 'submitter')
+    println(result);
+
+    // If we get this far then it's been approved. Abort is the other option!
+    return true;
+}
+
+def authcheck = getAuthCheck()
+
+pipeline {
+    parameters {
+	// Not used, but left here for info.
+        string(name: 'NODES', defaultValue: 'fedora37', description: 'Set of nodes(labels) to run on')
+    }
+    agent {
+	label params.NODES
+    }
+
+    stages {
+	stage('Not allowed') {
+	    when {
+		expression { authcheck != true }
+	    }
+	    // Not really a failure, but I'm testing
+	    stages {
+		stage('notify') {
+		    steps {
+			sh "env"
+			sh "echo authcheck: ${authcheck}"
+			setBuildStatus("Build not run", "FAILURE");
+		    }
+		}
+	    }
+	}
+	stage('Build and test') {
+	    when {
+		expression { authcheck == true }
+	    }
+	    matrix {
+		agent {
+		    label "${PLATFORM}"
+		}
+		axes {
+		    axis {
+			name 'PLATFORM'
+			values 'T-fedora37-86-64' 'T-debian-testing-x86-64' 'T-freebsd-x86-64'
+		    }
+		    axis {
+			name 'FUNCTION'
+			values 'voting' 'coverity' 'non-voting'
+		    }
+		}
+		exclude {
+		    axis {
+			name 'PLATFORM'
+			values 'T-debian-testing-x86-64' 'T-freebsd-x86-64'
+		    }
+		    axis {
+			name 'FUNCTION'
+			values 'non-voting'
+		    }
+		}
+		exclude {
+		    axis {
+			name 'PLATFORM'
+			values 'T-rhel7-x86-64'
+		    }
+		    axis {
+			name 'FUNCTION'
+			notValues 'coverity'
+		    }
+		}
+		exclude {
+		    axis {
+			name 'PLATFORM'
+			values 'T-fedora37-x86-64' 'T-freebsd-x86-64'
+		    }
+		    axis {
+			name 'FUNCTION'
+			values 'voting'
+		    }
+		}
+		stages {
+                    stage('Prep') {
+			steps {
+			    sh "env"
+			    sh "echo authcheck: ${authcheck}"
+                            sh 'sh autogen.sh'
+                            sh 'PKG_CONFIG_PATH=/srv/knet/origin/main/lib/pkgconfig/ ./configure'
+			}
+                    }
+                    stage('Build') {
+			steps {
+			    sh 'make all'
+			}
+                    }
+                    stage('Test') {
+			steps {
+			    sh 'make check'
+			}
+                    }
+                    stage('Dist Check') {
+			steps {
+			    sh 'make distcheck DISTCHECK_CONFIGURE_FLAGS="PKG_CONFIG_PATH=/srv/knet/origin/main/lib/pkgconfig/"'
+			}
+                    }
+		    stage('Covscan') {
+			when {
+			    expression { FUNCTION = "covscan") }
+			steps {
+			    sh "echo This is where COVSCAN happens"
+			}
+		    }
+		}
+// non-voting jobs can't cause a full failure
+		error {
+		    when {
+			expression { FUNCTION = "non-voting") }
+		}
+		script {
+		    currentBuild.rawBuild.@result = hudson.model.Result.SUCCESS
+		}
+	    }
+	}
+    }
+}
