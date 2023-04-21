@@ -138,13 +138,14 @@ pipeline {
                     }
 		    stage('Covscan') {
 			when {
-			    expression { FUNCTION = "covscan") }
+			    expression { FUNCTION = "covscan" }
+			}
 			steps {
 			    sh "echo This is where COVSCAN happens"
 			}
 		    }
 		}
-// non-voting jobs can't cause a full failure
+		// non-voting jobs shouldn't cause a full failure
 		error {
 		    when {
 			expression { FUNCTION = "non-voting") }
