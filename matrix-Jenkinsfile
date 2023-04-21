@@ -75,7 +75,7 @@ pipeline {
 		axes {
 		    axis {
 			name 'PLATFORM'
-			values 'T-fedora37-x86-64', 'T-debian-testing-x86-64', 'T-freebsd-13-x86-64'
+			values 'T-fedora37-x86-64', 'T-debian-testing-x86-64', 'T-freebsd-13-x86-64', 'T-rhel7-x86-64'
 		    }
 		    axis {
 			name 'FUNCTION'
@@ -96,11 +96,11 @@ pipeline {
 		    exclude {
 			axis {
 			    name 'PLATFORM'
-			    values 'T-rhel7-x86-64'
+			    values 'T-fedora37-x86-64', 'T-debian-testing-x86-64', 'T-freebsd-13-x86-64'
 			}
 			axis {
 			    name 'FUNCTION'
-			    notValues 'coverity'
+			    values 'coverity'
 			}
 		    }
 		    exclude {
@@ -141,6 +141,7 @@ pipeline {
 		    // TODO: not sure how to make a failing non-voting jobs not faile the whole pipeline yet
 		    stage('Coverity') {
 			when {
+			    beforeAgent true
 			    expression { FUNCTION = "coverity" }
 			}
 			steps {
