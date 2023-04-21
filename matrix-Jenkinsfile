@@ -138,25 +138,13 @@ pipeline {
 			    sh 'make distcheck DISTCHECK_CONFIGURE_FLAGS="PKG_CONFIG_PATH=/srv/knet/origin/main/lib/pkgconfig/"'
 			}
                     }
+		    // TODO: not sure how to make a failing non-voting jobs not faile the whole pipeline yet
 		    stage('Covscan') {
 			when {
 			    expression { FUNCTION = "covscan" }
 			}
 			steps {
 			    sh "echo This is where COVSCAN happens"
-			}
-		    }
-		}
-		// non-voting jobs shouldn't cause a full failure
-		post {
-		    failure {
-			stage {
-			    when {
-				expression { FUNCTION = "non-voting" }
-			    }
-			    script {
-				currentBuild.rawBuild.@result = hudson.model.Result.SUCCESS
-			    }
 			}
 		    }
 		}
