@@ -79,7 +79,7 @@ pipeline {
 		    }
 		    axis {
 			name 'FUNCTION'
-			values 'voting' 'coverity', 'non-voting'
+			values 'voting', 'coverity', 'non-voting'
 		    }
 		}
 		exclude {
