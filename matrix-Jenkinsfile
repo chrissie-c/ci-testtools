@@ -42,10 +42,14 @@ def authcheck = getAuthCheck()
 pipeline {
     parameters {
 	// Not used, but left here for info.
-        string(name: 'NODES', defaultValue: 'fedora37', description: 'Set of nodes(labels) to run on')
+        string(name: 'TIMEOUT', defaultValue: '60', description: 'Job timeout (in minutes)')
     }
     agent {
-	label params.NODES
+	none
+    }
+    options {
+	timeout(time: params.TIMEOUT, unit: 'MINUTES')
+	timestamps()
     }
 
     stages {
