@@ -106,7 +106,7 @@ pipeline {
 		    exclude {
 			axis {
 			    name 'PLATFORM'
-			    values 'T-fedora37-x86-64' 'T-freebsd-x86-64'
+			    values 'T-fedora37-x86-64', 'T-freebsd-x86-64'
 			}
 			axis {
 			    name 'FUNCTION'
@@ -152,8 +152,10 @@ pipeline {
 		    when {
 			expression { FUNCTION = "non-voting" }
 		    }
-		    script {
-			currentBuild.rawBuild.@result = hudson.model.Result.SUCCESS
+		    step {
+			script {
+			    currentBuild.rawBuild.@result = hudson.model.Result.SUCCESS
+			}
 		    }
 		}
 	    }
