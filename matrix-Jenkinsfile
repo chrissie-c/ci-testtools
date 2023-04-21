@@ -44,9 +44,8 @@ pipeline {
 	// Not used, but left here for info.
         string(name: 'TIMEOUT', defaultValue: '60', description: 'Job timeout (in minutes)')
     }
-    agent {
-	none
-    }
+    agent none
+
     options {
 	timeout(time: params.TIMEOUT, unit: 'MINUTES')
 	timestamps()
