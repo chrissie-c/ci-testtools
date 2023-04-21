@@ -64,8 +64,12 @@ pipeline {
 
     stages {
 	stage('Check user') {
-	    node {
-		def authcheck = getAuthCheck()
+	    steps {
+		step {
+		    node {
+			def authcheck = getAuthCheck()
+		    }
+		}
 	    }
 	}
 	stage('Not allowed') {
