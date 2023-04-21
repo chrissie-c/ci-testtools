@@ -75,7 +75,7 @@ pipeline {
 		axes {
 		    axis {
 			name 'PLATFORM'
-			values 'T-fedora37-x86-64', 'T-debian-testing-x86-64', 'T-freebsd-x86-64'
+			values 'T-fedora37-x86-64', 'T-debian-testing-x86-64', 'T-freebsd-13-x86-64'
 		    }
 		    axis {
 			name 'FUNCTION'
@@ -86,7 +86,7 @@ pipeline {
 		    exclude {
 			axis {
 			    name 'PLATFORM'
-			    values 'T-debian-testing-x86-64', 'T-freebsd-x86-64'
+			    values 'T-debian-testing-x86-64', 'T-freebsd-13-x86-64'
 			}
 			axis {
 			    name 'FUNCTION'
@@ -106,7 +106,7 @@ pipeline {
 		    exclude {
 			axis {
 			    name 'PLATFORM'
-			    values 'T-fedora37-x86-64', 'T-freebsd-x86-64'
+			    values 'T-fedora37-x86-64', 'T-freebsd-13-x86-64'
 			}
 			axis {
 			    name 'FUNCTION'
