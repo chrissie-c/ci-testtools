@@ -47,7 +47,8 @@ pipeline {
     agent none
 
     options {
-	timeout(time: params.TIMEOUT.toInteger(), unit: 'MINUTES')
+	timeout(time: 60, unit: 'MINUTES')
+//	timeout(time: params.TIMEOUT.toInteger(), unit: 'MINUTES')
 	timestamps()
     }
 
