@@ -34,7 +34,7 @@ boolean getAuthCheck()
     def gitHubPRUrl = "https://api.github.com/repos/${env.CHANGE_OWNER}/${env.CHANGE_REPO}/issues/${pullRequestId}/comments"
     def message = "Can one of the admins check and authorise this run please: ${env.BUILD_URL}console"
 
-    withCredentials([string(credentialsId: 'github-app-knet-jenkins', variable: 'GITHUB_TOKEN')]) {
+    withCredentials([string(credentialsId: '3719e8ca-c88f-496f-97d5-ff9db69b6b42', variable: 'GITHUB_TOKEN')]) {
 	sh "curl -X POST -H 'Authorization: token ${GITHUB_TOKEN}' -d '{\"body\":\"${message}\"}' ${gitHubPRUrl}"
     }
     
