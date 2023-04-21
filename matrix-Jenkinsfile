@@ -83,33 +83,39 @@ pipeline {
 		    }
 		}
 		excludes {
-		    axis {
-			name 'PLATFORM'
-			values 'T-debian-testing-x86-64', 'T-freebsd-x86-64'
-		    }
-		    axis {
-			name 'FUNCTION'
-			values 'non-voting'
-		    }
-		}
-		excludes {
-		    axis {
-			name 'PLATFORM'
-			values 'T-rhel7-x86-64'
-		    }
-		    axis {
-			name 'FUNCTION'
-			notValues 'coverity'
+		    exclude {
+			axis {
+			    name 'PLATFORM'
+			    values 'T-debian-testing-x86-64', 'T-freebsd-x86-64'
+			}
+			axis {
+			    name 'FUNCTION'
+			    values 'non-voting'
+			}
 		    }
 		}
 		excludes {
-		    axis {
-			name 'PLATFORM'
-			values 'T-fedora37-x86-64' 'T-freebsd-x86-64'
+		    exclude {
+			axis {
+			    name 'PLATFORM'
+			    values 'T-rhel7-x86-64'
+			}
+			axis {
+			    name 'FUNCTION'
+			    notValues 'coverity'
+			}
 		    }
-		    axis {
-			name 'FUNCTION'
-			values 'voting'
+		}
+		excludes {
+		    exclude {
+			axis {
+			    name 'PLATFORM'
+			    values 'T-fedora37-x86-64' 'T-freebsd-x86-64'
+			}
+			axis {
+			    name 'FUNCTION'
+			    values 'voting'
+			}
 		    }
 		}
 		stages {
