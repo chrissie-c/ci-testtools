@@ -31,8 +31,7 @@ boolean getAuthCheck()
 
     // Put a message in github that links to this job run
     // TODO put this in an unsandboxed shared library
-    def message = 'Can one of the admins check and authorise this run please: $env.BUILD_URL/console'
-    clusterLibSendReply("github", message);
+    clusterLibSendReply("github", "Can one of the admins check and authorise this run please: ${env.BUILD_URL}console");
 
     // Ask for approval
     echo "Approval needed from Jenkins administrator"
