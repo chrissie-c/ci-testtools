@@ -145,27 +145,44 @@ pipeline {
 			steps {
 			    script {
 				try {
-				    sh 'make grot'
+				    sh 'make all'
 				} catch (err) {
 				    if (FUNCTION == "voting" ) {
 					throw err
 				    }
-				    echo "Error in non-voting job: $err"
+				    echo "Error in make all for non-voting job: $err"
 				}
 			    }
 			}
                     }
                     stage('Test') {
 			steps {
-			    sh 'make check'
+			    script {
+				try {
+				    sh 'make check'
+				} catch (err) {
+				    if (FUNCTION == "voting" ) {
+					throw err
+				    }
+				    echo "Error in make check for non-voting job: $err"
+				}
+			    }
 			}
                     }
                     stage('Dist Check') {
 			steps {
-			    sh 'make distcheck DISTCHECK_CONFIGURE_FLAGS="PKG_CONFIG_PATH=/srv/knet/origin/main/lib/pkgconfig/"'
+			    script {
+				try {
+				    sh 'make distcheck DISTCHECK_CONFIGURE_FLAGS="PKG_CONFIG_PATH=/srv/knet/origin/main/lib/pkgconfig/"'
+				} catch (err) {
+				    if (FUNCTION == "voting" ) {
+					throw err
+				    }
+				    echo "Error in make check for non-voting job: $err"
+				}
+			    }
 			}
                     }
-		    // TODO: not sure how to make a failing non-voting jobs not faile the whole pipeline yet
 		    stage('Coverity') {
 			when {
 			    beforeAgent true
