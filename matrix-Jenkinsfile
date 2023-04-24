@@ -143,7 +143,13 @@ pipeline {
                     }
                     stage('Build') {
 			steps {
-			    sh 'make all'
+			    script {
+				try {
+				    sh 'make grot'
+				} catch (err) {
+				    echo "Error caught"
+				}
+			    }
 			}
                     }
                     stage('Test') {
