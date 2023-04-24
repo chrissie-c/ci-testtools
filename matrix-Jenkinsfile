@@ -207,9 +207,9 @@ pipeline {
 	always {
 	    script {
 		if (non_voting_fail > 0) {
-		    mail to: "ccaulfie@redhat.com"
-		    subject: "${env.$BUILD_TAG had non-voting fails"
-		    body: "Voting job fails: $voting_fails\Non-voting fails: $nonvoting_fails"
+		    mail to: "ccaulfie@redhat.com",
+			subject: "${env.$BUILD_TAG had non-voting fails",
+			body: "Voting job fails: $voting_fails\nNon-voting fails: $nonvoting_fails"
 		}
 	    }
 	}
