@@ -30,12 +30,12 @@ boolean getAuthCheck()
     // Unknown user - get approval to run this
 
     // Put a message in github that links to this job run
-    // TODO put this in an unsandboxed shared library
     clusterLibSendReply("github", "Can one of the admins check and authorise this run please: ${env.BUILD_URL}input");
 
     // Ask for approval
     echo "Approval needed from Jenkins administrator"
-    result = input(message: "${env.CHANGE_URL/files}\nplease verify this is safe to run", ok: "OK",
+    def input_msg = "${env.CHANGE_URL/files}\nplease verify this is safe to run"
+    result = input(message: input_msg, ok: "OK",
 		   submitterParameter: 'submitter')
     println(result);
 
