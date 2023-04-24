@@ -34,8 +34,7 @@ boolean getAuthCheck()
 
     // Ask for approval
     echo "Approval needed from Jenkins administrator"
-    def input_msg = "${env.CHANGE_URL/files}\nplease verify this is safe to run"
-    result = input(message: input_msg, ok: "OK",
+    result = input(message: "${env.CHANGE_URL}/files\nplease verify this is safe to run", ok: "OK",
 		   submitterParameter: 'submitter')
     println(result);
 
