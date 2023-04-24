@@ -3,6 +3,6 @@ def call(String platform, String msg) {
     if (platform == "github") {
 	pullRequest.comment(msg)
     } else {
-	echo "Platform ${platform} not configure in clusterLibSendReply.groovy"
+	echo "Platform ${platform} not configured in clusterLibSendReply.groovy"
     }
 }
