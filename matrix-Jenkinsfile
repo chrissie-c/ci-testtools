@@ -150,7 +150,7 @@ pipeline {
 				    if (FUNCTION == "voting" ) {
 					throw err
 				    }
-				    echo "Error in non-voting job: $err.getMessage()"
+				    echo "Error in non-voting job: $err"
 				}
 			    }
 			}
