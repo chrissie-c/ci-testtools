@@ -1,8 +1,8 @@
-def call(Map config = [:]) {
+def call(String platform, String msg) {
     // TODO make this site-agnostic so that it can deal with Pagure as well as github
-    if (config.platform == "github") {
-	pullRequest.Comment(config.msg);
+    if (platform == "github") {
+	pullRequest.Comment(msg);
     } else {
-	echo "Platform ${config.platform} not configure in clusterLibSendReply.groovy"
+	echo "Platform ${platform} not configure in clusterLibSendReply.groovy"
     }
 }
