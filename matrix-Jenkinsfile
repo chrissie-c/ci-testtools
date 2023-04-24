@@ -30,9 +30,9 @@ boolean getAuthCheck()
     // Unknown user - get approval to run this
 
     // Put a message in github that links to this job run
-    /// NOTE: We don't have CHANGE_REPO or CHANGE_OWNER in the environment
+    // TODO put this in an unsandboxed shared library
     def message = "Can one of the admins check and authorise this run please: ${env.BUILD_URL}console"
-    pullRequest.Comment(message);
+    clisterLibSendReply(platform: "github", msg: message);
 
     // Ask for approval
     echo "Approval needed from Jenkins administrator"
