@@ -43,6 +43,8 @@ boolean getAuthCheck()
 }
 
 def authcheck = false;
+def voting_fail = 0;
+def nonvoting_fail = 0;
 
 pipeline {
     parameters {
@@ -151,6 +153,7 @@ pipeline {
 					throw err
 				    }
 				    echo "Error in make all for non-voting job: $err"
+				    nonvoting_fail++
 				}
 			    }
 			}
@@ -162,9 +165,11 @@ pipeline {
 				    sh 'make check'
 				} catch (err) {
 				    if (FUNCTION == "voting" ) {
+					voting_fail++
 					throw err
 				    }
 				    echo "Error in make check for non-voting job: $err"
+				    nonvoting_fail++
 				}
 			    }
 			}
@@ -176,9 +181,11 @@ pipeline {
 				    sh 'make distcheck DISTCHECK_CONFIGURE_FLAGS="PKG_CONFIG_PATH=/srv/knet/origin/main/lib/pkgconfig/"'
 				} catch (err) {
 				    if (FUNCTION == "voting" ) {
+					voting_fail++
 					throw err
 				    }
 				    echo "Error in make check for non-voting job: $err"
+				    nonvoting_fail++
 				}
 			    }
 			}
@@ -192,6 +199,17 @@ pipeline {
 			    sh "echo This is where COVSCAN happens"
 			}
 		    }
+		}
+	    }
+	}
+    }
+    post {
+	always {
+	    script {
+		if (non_voting_fail > 0) {
+		    mail to: "ccaulfie@redhat.com"
+		    subject: "${env.$BUILD_TAG had non-voting fails"
+		    body: "Voting job fails: $voting_fails\Non-voting fails: $nonvoting_fails"
 		}
 	    }
 	}
