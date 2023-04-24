@@ -147,7 +147,7 @@ pipeline {
 				try {
 				    sh 'make grot'
 				} catch (err) {
-				    if (FUNCTION = "voting" ) {
+				    if (FUNCTION == "voting" ) {
 					throw err
 				    }
 				    echo "Error in non-voting job: $err.getMessage()"
