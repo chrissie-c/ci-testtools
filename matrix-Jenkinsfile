@@ -202,15 +202,17 @@ pipeline {
 	always {
 	    // An example of calling a script and returning a value
 	    // maybe use this to get owner email addresses etc from ci-tools
-	    script {
-		if (fileExists('testrun.sh')) {
-		    result = sh(script: 'testrun.sh', returnStdout: true)
-		    echo "testrun returned ${result}"
-		}
-		if (nonvoting_fail > 0 || voting_fail > 0) {
-		    mail to: "ccaulfie@redhat.com, fabbione@redhat.com",
-			subject: "${env.BUILD_TAG} had non-voting fails",
-			body: "Voting job fails: ${voting_fail}\nNon-voting fails: ${nonvoting_fail}"
+	    node('nobuild') {
+		script {
+		    if (fileExists('testrun.sh')) {
+			result = sh(script: '/var/lib/jenkins/testrun.sh', returnStdout: true)
+			echo "testrun returned ${result}"
+		    }
+		    if (nonvoting_fail > 0 || voting_fail > 0) {
+			mail to: "ccaulfie@redhat.com, fabbione@redhat.com",
+			    subject: "${env.BUILD_TAG} had non-voting fails",
+			    body: "Voting job fails: ${voting_fail}\nNon-voting fails: ${nonvoting_fail}"
+		    }
 		}
 	    }
 	}
