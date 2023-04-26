@@ -203,7 +203,7 @@ pipeline {
 	    // An example of calling a script and returning a value
 	    // maybe use this to get owner email addresses etc from ci-tools
 	    script {
-		if (fileExists('testrun.sh') {
+		if (fileExists('testrun.sh')) {
 		    result = sh(script: 'testrun.sh', returnStdout: true)
 		    echo "testrun returned ${result}"
 		}
