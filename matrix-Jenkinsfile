@@ -204,7 +204,7 @@ pipeline {
 	    // maybe use this to get owner email addresses etc from ci-tools
 	    node('nobuild') {
 		script {
-		    if (fileExists('testrun.sh')) {
+		    if (fileExists('/var/lib/jenkins/testrun.sh')) {
 			result = sh(script: '/var/lib/jenkins/testrun.sh', returnStdout: true)
 			echo "testrun returned ${result}"
 		    }
