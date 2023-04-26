@@ -40,7 +40,7 @@ boolean getAuthCheck()
 
     // Ask for approval
     echo "Approval needed from Jenkins administrator"
-    result = input(message: "<a href=\"${env.CHANGE_URL}/files\">please verify this is safe to run</a>", ok: "OK",
+    result = input(message: "please verify this is safe to run", ok: "OK",
 		   submitterParameter: 'submitter')
     println(result);
 
@@ -50,7 +50,6 @@ boolean getAuthCheck()
 
 pipeline {
     parameters {
-	// Not used, but left here for info.
         string(name: 'TIMEOUT', defaultValue: '60', description: 'Job timeout (in minutes)')
     }
     agent none
@@ -92,7 +91,7 @@ pipeline {
 		    exclude {
 			axis {
 			    name 'PLATFORM'
-			    values 'T-debian-testing-x86-64', 'T-freebsd-13-x86-64', 'T-rhel7-x86-64'
+			    values 'T-debian-testing-x86-64', 'T-rhel7-x86-64'
 			}
 			axis {
 			    name 'FUNCTION'
