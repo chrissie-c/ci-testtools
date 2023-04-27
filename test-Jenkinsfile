@@ -1,0 +1,220 @@
+// Jenkinsfile for the knet-ci-test project
+// 27-Apr-2023    Chrissie Caulfield    original version
+//
+
+// Globals
+def authcheck = false
+def voting_fail = 0
+def nonvoting_fail = 0
+
+// Check if a PR has been submitted by an authorized user
+boolean getAuthCheck()
+{
+    branchEvent = currentBuild.getBuildCauses('jenkins.branch.BranchEventCause')
+    cause = currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause')
+
+    if (branchEvent.size().equals(0)) {
+	// Job was triggered internally or manually by admin
+	return true
+    }
+
+    // Caused by a PR. Check it's from a valid user    
+    valid_admins = getValidPRUsers()
+    if (valid_admins.any(env.CHANGE_AUTHOR.contains(it))) {
+	return true
+    }
+
+    //
+    // Unknown user - get approval to run this
+    //
+
+    // Put a message in github/pagure that links to this job run
+    clusterLibSendReply("github", "Can one of the admins check and authorise this run please: ${env.BUILD_URL}input")
+
+    // Ask for approval
+    echo "Approval needed from Jenkins administrator"
+    result = input(message: "please verify this is safe to run", ok: "OK",
+		   submitterParameter: 'submitter')
+    println(result)
+
+    // If we get this far then it's been approved. Abort is the other option!
+    return true
+}
+
+pipeline {
+    // Use the matrix
+    agent none
+
+    // Params that can be overridden at run-time
+    parameters {
+        string(name: 'TIMEOUT', defaultValue: '60', description: 'Job timeout (in minutes)')
+    }
+    options {
+	timeout(time: params.TIMEOUT as int, unit: 'MINUTES')
+	timestamps()
+    }
+
+    stages {
+	// First check we are allowed to run
+	stage('Check user') {
+	    steps {
+		// Run this on the Jenkins host
+		node('nobuild') {
+		    script {
+			authcheck = getAuthCheck()
+		    }
+		}
+	    }
+	}
+
+	// This is the main stage that covers everything
+	stage('Build and test') {
+	    when {
+		// getAuthCheck will usually abort the job if permission is denied
+		// but this is an extra check!
+		expression { authcheck == true }
+	    }
+
+	    // Yes, it's all negatives!
+	    matrix {
+		agent {
+		    label "${PLATFORM}"
+		}
+		axes {
+		    axis {
+			name 'PLATFORM'
+			values 'T-fedora37-x86-64', 'T-debian-testing-x86-64', 'T-freebsd-13-x86-64', 'T-rhel7-x86-64'
+		    }
+		    axis {
+			name 'FUNCTION'
+			values 'voting', 'coverity', 'non-voting'
+		    }
+		}
+		excludes {
+		    exclude {
+			axis {
+			    name 'PLATFORM'
+			    values 'T-debian-testing-x86-64', 'T-rhel7-x86-64'
+			}
+			axis {
+			    name 'FUNCTION'
+			    values 'non-voting'
+			}
+		    }
+		    exclude {
+			axis {
+			    name 'PLATFORM'
+			    values 'T-fedora37-x86-64', 'T-debian-testing-x86-64', 'T-freebsd-13-x86-64'
+			}
+			axis {
+			    name 'FUNCTION'
+			    values 'coverity'
+			}
+		    }
+		    exclude {
+			axis {
+			    name 'PLATFORM'
+			    values 'T-fedora37-x86-64', 'T-freebsd-13-x86-64'
+			}
+			axis {
+			    name 'FUNCTION'
+			    values 'voting'
+			}
+		    }
+		}
+		// All of the stages that actually do stuff
+		stages {
+                    stage('Prep') {
+			steps {
+			    script {
+				try {
+				    runprep()
+				} catch (err) {
+				    if (FUNCTION == "voting" ) {
+					throw err
+				    }
+				    echo "Error in Prep stage for non-voting job: $err"
+				    nonvoting_fail++
+				}
+			    }
+			}
+		    }
+                    stage('Build') {
+			steps {
+			    script {
+				try {
+				    runBuild()
+				} catch (err) {
+				    if (FUNCTION == "voting" ) {
+					throw err
+				    }
+				    echo "Error in Build stage for non-voting job: $err"
+				    nonvoting_fail++
+				}
+			    }
+			}
+                    }
+                    stage('Test') {
+			steps {
+			    script {
+				try {
+				    runCheck()
+				} catch (err) {
+				    if (FUNCTION == "voting" ) {
+					voting_fail++
+					throw err
+				    }
+				    echo "Error in Test stage for non-voting job: $err"
+				    nonvoting_fail++
+				}
+			    }
+			}
+                    }
+                    stage('Dist') {
+			steps {
+			    script {
+				try {
+				    runDist()
+				} catch (err) {
+				    if (FUNCTION == "voting" ) {
+					voting_fail++
+					throw err
+				    }
+				    echo "Error in Dist for non-voting job: $err"
+				    nonvoting_fail++
+				}
+			    }
+			}
+                    }
+		    stage('Coverity') {
+			when {
+			    beforeAgent true
+			    expression { FUNCTION = "coverity" }
+			}
+			steps {
+			    runCoverity()
+			}
+		    }
+		}
+	    }
+	}
+    }
+
+    // When finished, check things
+    post {
+	always {
+	    // Run this on the Jenkins host
+	    node('nobuild') {
+		// Notify interested users if non-voting jobs fail
+		script {
+		    email_addrs = getEmails()
+		    if (nonvoting_fail > 0 || voting_fail > 0) {
+			mail to: email_addrs,
+			    subject: "${env.BUILD_TAG} had non-voting fails",
+			    body: "Voting job fails: ${voting_fail}\nNon-voting fails: ${nonvoting_fail}\nsee ${env.BUILD_URL}pipeline-console/"
+		    }
+		}
+	    }
+	}
+    }
+}
