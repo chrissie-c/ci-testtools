@@ -188,8 +188,7 @@ pipeline {
                     }
 		    stage('Coverity') {
 			when {
-			    beforeAgent true
-			    expression { FUNCTION = "coverity" }
+			    expression { FUNCTION == "coverity" }
 			}
 			steps {
 			    runCoverity()
