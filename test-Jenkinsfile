@@ -128,7 +128,7 @@ pipeline {
 			steps {
 			    script {
 				try {
-				    runprep()
+				    runPrep()
 				} catch (err) {
 				    if (FUNCTION == "voting" ) {
 					throw err
