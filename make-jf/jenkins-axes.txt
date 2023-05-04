@@ -1,0 +1,4 @@
+# specified as <type> [[<node>] ....]
+voting fedora37-x86-64 debian13-x86-64 rhel7-arm7l rhel8-x86-64 rhel7-x86-64
+nonvoting freebsd13-x86-64 debian14-sparc
+staticcheck rhel8-x86-64 rhel7-x86-64
