@@ -1,41 +1,61 @@
 #!/bin/bash
+#
+# Takes a template Jenkinsfile (in $1) and adds
+# the node axes for voting,nonvoting and staticcheck
+#
 
-allnodes="" # Get this from Jenkins
-# this line for testing only
-allnodes="'debian13-x86-64', 'debian14-sparc', 'fedora37-x86-64', 'freebsd13-x86-64', 'rhel7-arm7l', 'rhel7-x86-64', 'rhel8-x86-64'"
 
-# read the file and build the INCLUDES list
-declare -a line
-declare -A FUNCTION
-declare -A EXCLUDES
-ALLFUNCS=""
-while read -a line
-do
-    if [ "${line[0]:0:1}" != "#" ] # Ignore comments
-    then
-	label=${line[0]}
-	if [ -n "$ALLFUNCS" ]
-	then
-	    ALLFUNCS+=", "
-	fi
-	ALLFUNCS+="'$label'"
-	FUNCTION[$label]=""
-	for i in ${!line[@]}
+getnodelist() {
+	nodelist=$(echo $(ls -1 $HOME/nodes) | tr '\n' ' ')
+}
+
+add_to_functions() {
+	labels=$(cat $HOME/nodes/$1/config.xml | grep label | sed -e 's/<label>//g' -e 's/<\/label>//g')
+
+	for i in $labels
 	do
-	    if [ $i != 0 ]
-	    then
-		FUNCTION[$label]+="${line[$i]} "
-	    fi
+	    case $i in
+		voting)
+		    FUNCTION["voting"]+=$1
+		    ;;
+		non-voting)
+		    FUNCTION["nonvoting"]+=$1
+		    ;;
+		coverity)
+		    FUNCTION["coverity"]+=$1
+		    ;;
+	    esac
 	done
-	echo "$label = ${FUNCTION[$label]}"
-   fi
-done < $1
+}
 
-# Build the excludes list *sigh*
-for i in ${!FUNCTION[@]}
+if [ -z "$1" ]
+then
+    echo "usage $0 [template-jenkinsfile]"
+    exit
+fi
+
+if [ ! -f "$1" ]
+then
+    echo "template '$1' not found" 
+    exit
+fi
+
+
+
+getnodelist
+declare -A EXCLUDES
+declare -A FUNCTION
+
+for i in $nodelist
+do
+    add_to_functions $i
+done
+
+# Build the excludes list for the Jenkinsfile
+for i in "voting" "nonvoting" "staticcheck"
 do
     EXCLUDES[$i]=""
-    for n in $allnodes
+    for n in $nodelist
     do
 	node=`echo $n|tr -d ",' "`
 	echo "${FUNCTION[$i]}" | grep "$node" > /dev/null 2>/dev/null
@@ -50,7 +70,7 @@ do
     done
 done
 
-sed < $2 -e "s/<<PLATFORMS>>/$allnodes/" \
+sed < $1 -e "s/<<PLATFORMS>>/$nodelist/" \
     -e"s/<<FUNCTIONS>>/$ALLFUNCS/" \
     -e"s/<<EXCLUDES-voting>>/${EXCLUDES['voting']}/" \
     -e"s/<<EXCLUDES-staticcheck>>/${EXCLUDES['staticcheck']}/" \
