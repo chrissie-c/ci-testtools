@@ -1,7 +1,10 @@
 def call(Map pipelineParams = [:]) {
   
   pipeline {
-    agent none
+	agent none
+	options { 
+	    disableConcurrentBuilds() 
+	}
       stages {
         stage('Build and Test') {
 	    environment {
