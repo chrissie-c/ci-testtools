@@ -24,6 +24,7 @@ pipeline {
 			    steps {
 				sh 'date'
 				sh 'echo "this is voting"'
+				sh 'uname -a'
 				sh 'sleep 300'
 			    }
 			}
@@ -31,6 +32,7 @@ pipeline {
 			    steps {
 				sh 'date'
 				sh 'echo "this is non-voting"'
+				sh 'uname -a'
 				sh 'sleep 300'
 			    }
 			}
@@ -38,6 +40,7 @@ pipeline {
 			    steps {
 				sh 'date'
 				sh 'echo "this is non-voting"'
+				sh 'uname -a'
 				sh 'sleep 300'
 			    }
 			}
