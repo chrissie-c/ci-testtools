@@ -10,7 +10,7 @@ def voting_fail = 0
 def lockfile ="unknown"
 
 pipeline {
-    agent { label 'built-in' }
+    agent any
 
     stages {
 	// This is the main stage that covers everything
