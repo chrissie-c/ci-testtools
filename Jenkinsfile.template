@@ -2,7 +2,7 @@
 // 27-Apr-2023    Chrissie Caulfield    original version
 //
 
-@Library('ProjectLib@devel') _
+@Library('ProjectLib') _
 // Globals
 def authcheck = false
 def voting_fail = 0
@@ -19,6 +19,7 @@ pipeline {
     options {
 	timeout(time: params.TIMEOUT as int, unit: 'MINUTES')
 	timestamps()
+	skipDefaultCheckout(true)
     }
 
     stages {
@@ -95,6 +96,9 @@ pipeline {
 		    // Prepare the checkout for building (autogen/configure etc)
                     stage('Prep') {
 			steps {
+			    // Clean before build
+			    cleanWs()
+			    checkout scm
 			    script {
 				try {
 				    runPrep()
@@ -165,6 +169,12 @@ pipeline {
 			}
 			steps {
 			    runStaticCheck()
+			}
+		    }
+		    // Clean up
+		    stage('Clean') {
+			steps {
+			    cleanWs()
 			}
 		    }
 		}

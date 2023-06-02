@@ -45,6 +45,7 @@ fi
 getnodelist
 declare -A EXCLUDES
 declare -A FUNCTION
+ALLFUNCS="voting,nonvoting,staticcheck,cleanup"
 
 for i in $nodelist
 do
