@@ -23,9 +23,10 @@ Calendar.getInstance().getTime().format('YYYYMMdd-hhmmss',TimeZone.getTimeZone('
                     stages {
 			stage('Prep') {
 		            steps {
+				sh echo "CC: $timeStamp"
 				sh "sh autogen.sh"
 				sh "./configure"
-				echo "$timeStamp"
+
 			    }
 			}
 			stage('Build') {
