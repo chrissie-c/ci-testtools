@@ -1,5 +1,7 @@
 def call(Map pipelineParams = [:]) {
-    
+    def timeStamp = 
+Calendar.getInstance().getTime().format('YYYYMMdd-hhmmss',TimeZone.getTimeZone('CST'))
+
     pipeline {
 	agent none
 	stages {
@@ -23,6 +25,7 @@ def call(Map pipelineParams = [:]) {
 		            steps {
 				sh "sh autogen.sh"
 				sh "./configure"
+				echo "$timeStamp"
 			    }
 			}
 			stage('Build') {
