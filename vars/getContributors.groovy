@@ -1,4 +1,4 @@
-def call(String: owner, String: repo)
+def call(String owner, String repo)
 {
     def apiUrl = "https://api.github.com/repos/${owner}/${repo}/collaborators"
     def contributors = []
