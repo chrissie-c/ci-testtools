@@ -7,10 +7,8 @@ def call(Map pipelineParams = [:]) {
 		environment {
 	    	    PROJECT = "${pipelineParams.project}"
 		    BRANCH = "${pipelineParams.branch}"
-		    echo "${pipelineParams}"
-		    c = getContributors('ClusterLabs','libqb');
-		    echo "${c}"
 		}
+		
 		matrix {
                     agent {
 			label "${PLATFORM}"
@@ -24,6 +22,10 @@ def call(Map pipelineParams = [:]) {
                     stages {
 			stage('Prep') {
 		            steps {
+				echo "${pipelineParams}"
+				c = getContributors('ClusterLabs','libqb')
+				echo "${c}"
+				
 				sh "sh autogen.sh"
 				sh "./configure"
 			    }
