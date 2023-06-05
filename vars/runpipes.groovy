@@ -1,6 +1,5 @@
 def call(Map pipelineParams = [:]) {
 
-
     pipeline {
 	agent none
 	stages {
@@ -8,6 +7,7 @@ def call(Map pipelineParams = [:]) {
 		environment {
 	    	    PROJECT = "${pipelineParams.project}"
 		    BRANCH = "${pipelineParams.branch}"
+		    echo "${pipelineParams}"
 		}
 		matrix {
                     agent {
@@ -24,7 +24,6 @@ def call(Map pipelineParams = [:]) {
 		            steps {
 				sh "sh autogen.sh"
 				sh "./configure"
-
 			    }
 			}
 			stage('Build') {
