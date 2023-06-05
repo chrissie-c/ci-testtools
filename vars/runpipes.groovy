@@ -20,13 +20,8 @@ def call(Map pipelineParams = [:]) {
 			}
                     }
                     stages {
-			wildcard()
 			stage('Prep') {
 		            steps {
-				script {
-				    timeStamp = Calendar.getInstance().getTime().format('YYYYMMdd-hhmmss',TimeZone.getTimeZone('CST'))				    
-				}
-				sh "echo CC: $timeStamp"
 				sh "sh autogen.sh"
 				sh "./configure"
 
@@ -39,7 +34,7 @@ def call(Map pipelineParams = [:]) {
 			}
 			stage('Test') {
                             steps {
-				runstuff(project:"$PROJECT", branch:"$BRANCH", makeopts:"")
+				runstuff(project:"$PROJECT", branch:"$BRANCH", makeopts:"check")
 			    }
 			}
 			stage('Build tarball') {
