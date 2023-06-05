@@ -8,6 +8,8 @@ def call(Map pipelineParams = [:]) {
 	    	    PROJECT = "${pipelineParams.project}"
 		    BRANCH = "${pipelineParams.branch}"
 		    echo "${pipelineParams}"
+		    c = getContributors('ClusterLabs','libqb');
+		    echo "${c}"
 		}
 		matrix {
                     agent {
