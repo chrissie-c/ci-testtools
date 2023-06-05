@@ -22,10 +22,12 @@ def call(Map pipelineParams = [:]) {
                     stages {
 			stage('Prep') {
 		            steps {
-				echo "${pipelineParams}"
-				c = getContributors('ClusterLabs','libqb')
+				script {
+				    def c = getContributors('ClusterLabs','libqb')
+				}
 				echo "${c}"
-				
+
+				echo "${pipelineParams}"				
 				sh "sh autogen.sh"
 				sh "./configure"
 			    }
