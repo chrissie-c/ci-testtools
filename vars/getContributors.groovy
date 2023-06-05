@@ -6,7 +6,7 @@ def call(String owner, String repo)
     // Make an HTTP request to the GitHub API
     def response = httpRequest(
         url: apiUrl,
-        authentication: 'github',
+        authentication: 'chrissie-c',
         validResponseCodes: '200',
         contentType: 'APPLICATION_JSON'
     )
