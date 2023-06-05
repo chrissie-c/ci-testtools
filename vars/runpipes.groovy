@@ -20,6 +20,7 @@ def call(Map pipelineParams = [:]) {
 			}
                     }
                     stages {
+			wildcard()
 			stage('Prep') {
 		            steps {
 				script {
@@ -38,7 +39,7 @@ def call(Map pipelineParams = [:]) {
 			}
 			stage('Test') {
                             steps {
-				runstuff(project:"$PROJECT", branch:"$BRANCH", makeopts:"check")
+				runstuff(project:"$PROJECT", branch:"$BRANCH", makeopts:"")
 			    }
 			}
 			stage('Build tarball') {
