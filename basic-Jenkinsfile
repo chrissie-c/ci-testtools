@@ -11,8 +11,8 @@ def lockfile ="unknown"
 
 @NonCPS
 def getNodes(String label) {
-    n =jenkins.model.Jenkins.instance.getNodes()
-    println("NODES:", n)
+    n = jenkins.model.Jenkins.instance.getNodes()
+    println("NODES: ${n}")
 }
 
 
@@ -30,26 +30,18 @@ pipeline {
 			stage('voting') {
 			    steps {
 				getNodes()
-				sh 'date'
-				sh 'echo "this is voting"'
-				sh 'uname -a'
-				sh 'sleep 300'
+				sh "date"
 			    }
 			}
 			stage('non-voting') {
 			    steps {
 				sh 'date'
-				sh 'echo "this is non-voting"'
-				sh 'uname -a'
-				sh 'sleep 300'
 			    }
 			}
 			stage('covscan') {
 			    steps {
 				sh 'date'
 				sh 'echo "this is non-voting"'
-				sh 'uname -a'
-				sh 'sleep 300'
 			    }
 			}
 		    }
