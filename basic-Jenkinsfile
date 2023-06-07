@@ -9,7 +9,7 @@ def nonvoting_fail = 0
 def voting_fail = 0
 def lockfile ="unknown"
 
-@NonCPS
+//@NonCPS
 def getNodes(String label) {
     n = jenkins.model.Jenkins.instance.getNodes()
     println("NODES: ${n}")
@@ -29,7 +29,9 @@ pipeline {
 		    parallel {
 			stage('voting') {
 			    steps {
-				getNodes()
+				script (
+				    getNodes()
+				}
 				sh "date"
 			    }
 			}
