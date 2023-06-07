@@ -29,7 +29,7 @@ pipeline {
 		    parallel {
 			stage('voting') {
 			    steps {
-				script (
+				script {
 				    getNodes()
 				}
 				sh "date"
