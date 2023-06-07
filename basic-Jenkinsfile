@@ -9,12 +9,6 @@ def nonvoting_fail = 0
 def voting_fail = 0
 def lockfile ="unknown"
 
-@NonCPS
-def getNodes() {
-    n = jenkins.model.Jenkins.instance.getNodes()
-    println("NODES: ${n}")
-}
-
 
 pipeline {
     agent { label 'fedora' }
