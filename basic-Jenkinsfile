@@ -9,6 +9,13 @@ def nonvoting_fail = 0
 def voting_fail = 0
 def lockfile ="unknown"
 
+@NonCPS
+def getNodes(String label) {
+    n =jenkins.model.Jenkins.instance.getNodes()
+    println("NODES:", n)
+}
+
+
 pipeline {
     agent { label 'fedora' }
 
@@ -22,6 +29,7 @@ pipeline {
 		    parallel {
 			stage('voting') {
 			    steps {
+				getNodes()
 				sh 'date'
 				sh 'echo "this is voting"'
 				sh 'uname -a'
