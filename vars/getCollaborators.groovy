@@ -9,8 +9,6 @@ def call(String url)
     println("CC: GOT HERE for ${url}")
     COLLAB_CREDENTIALS = credentials("489d4ea3-11c9-40ab-a794-54197b51f081")
     println("${COLLAB_CREDENTIALS}")
-    println("${COLLAB_CREDENTIALS_USR}")
-    println("${COLLAB_CREDENTIALS_PSW}")
 
     collabs = sh (
 	script: 'curl -s -u $COLLAB_CREDENTIALS' + " ${url}",
