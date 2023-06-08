@@ -23,10 +23,10 @@ pipeline {
 		    parallel {
 			stage('voting') {
 			    steps {
-				script {
-				    getCollaborators($env.GIT_URL)
-				}
 				sh "date"
+				script {
+				    getCollaborators(env.GIT_URL)
+				}
 			    }
 			}
 			stage('non-voting') {
