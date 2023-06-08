@@ -11,7 +11,7 @@ def call(String url)
     println('$COLLAB_CREDENTIALS')
 
     collabs = sh (
-	script: "curl -s -u ${COLLAB_CREDENTIALS}" + " ${url}",
+	script: "curl -s -u '${COLLAB_CREDENTIALS}'" + " ${url}",
 	returnStdout: true)
     parsed = readJSON text: collabs
     len=5; //yeah
