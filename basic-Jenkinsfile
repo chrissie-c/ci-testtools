@@ -24,7 +24,7 @@ pipeline {
 			stage('voting') {
 			    steps {
 				script {
-				    getNodes()
+				    getCollaborators($env.GIT_URL)
 				}
 				sh "date"
 			    }
