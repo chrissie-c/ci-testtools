@@ -8,7 +8,7 @@ def call(String github_url)
 
     println("CC: NOW GOT HERE for ${url}")
     CREDS = credentials("489d4ea3-11c9-40ab-a794-54197b51f081")
-    println('$CREDS')
+    sh 'echo $CREDS'
 
     collabs = sh (
 	script: 'curl -s -u ' + CREDS  + " ${url}",
