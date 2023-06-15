@@ -21,6 +21,13 @@ pipeline {
 	    }
 	    // All of the stages that actually do stuff
 	    stages {
+		stage('test vars') {
+		    steps {
+			initVariables("Lockfiles are a joke");
+			echo "CC: authcheck = ${authcheck}"
+			echo "CC: ${lockfile}"
+		    }
+		}
 		// Kick off the real jobs
 		stage('Standard builds') {
 		    parallel {
@@ -28,9 +35,6 @@ pipeline {
 			    steps {
 				sh "date"
 				sh 'echo envcreds $CREDS'
-				script {
-				    getCollaborators(env.GIT_URL)
-				}
 			    }
 			}
 			stage('non-voting') {
