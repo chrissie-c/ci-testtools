@@ -22,29 +22,26 @@ pipeline {
 	    // All of the stages that actually do stuff
 	    stages {
 		// Kick off the real jobs
-		stage('Standard builds') {
-		    parallel {
-			stage('voting') {
-			    steps {
-				sh "sh autogen.sh"
-				sh './configure'
-				sh 'make all check'
-			    }
-			}
-			stage('non-voting') {
-			    steps {
-				sh './configure --enable-debug'
-				sh 'make all check'
-			    }
-			}
-			stage('covscan') {
-			    steps {
-				sh 'make CFLAGS="-fanalyzer"'
-			    }
-			}
+		stage('voting') {
+		    steps {
+			sh "sh autogen.sh"
+			sh './configure'
+			sh 'make all check'
+		    }
+		}
+		stage('non-voting') {
+		    steps {
+			sh './configure --enable-debug'
+			sh 'make all check'
+		    }
+		}
+		stage('covscan') {
+		    steps {
+			sh 'make CFLAGS="-fanalyzer"'
 		    }
 		}
 	    }
 	}
     }
 }
+
