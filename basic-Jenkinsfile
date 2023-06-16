@@ -25,9 +25,6 @@ pipeline {
 		stage('Standard builds') {
 		    parallel {
 			stage('voting') {
-			    when {
-				expression { authcheck == true && env.BRANCH_NAME == "main234" }
-			    }
 			    steps {
 				sh "sh autogen.sh"
 				sh './configure'
