@@ -29,19 +29,20 @@ pipeline {
 				expression { authcheck == true && env.BRANCH_NAME == "main234" }
 			    }
 			    steps {
-				sh "date"
-				sh 'echo envcreds $CREDS'
+				sh "sh autogen.sh"
+				sh './configure'
+				sh 'make all check'
 			    }
 			}
 			stage('non-voting') {
 			    steps {
-				sh 'date'
+				sh './configure --enable-debug'
+				sh 'make all check'
 			    }
 			}
 			stage('covscan') {
 			    steps {
-				sh 'date'
-				sh 'echo "this is non-voting"'
+				sh 'make CFLAGS="-fanalyzer"'
 			    }
 			}
 		    }
