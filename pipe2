@@ -29,10 +29,6 @@ pipeline {
 			sh 'make distcheck'
                     }
                 }
-		stage('Wildcard') {
-		   wildcard()
-		}
-		
             }
 	}
     }
