@@ -7,7 +7,7 @@ def call(int timeout, Closure fn, Map param)
 	}
     } catch (err) {
 	long timePassed = System.currentTimeMillis() - startTime
-	if (timePassed >= timeoutInMinutes * 60000) {
+	if (timePassed >= timeout * 60000) {
             prinln("function ${fn} timed out")
 	}
     }
