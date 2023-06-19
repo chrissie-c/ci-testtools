@@ -28,7 +28,7 @@ pipeline {
 		// Kick off the real jobs
 		stage('voting') {
 		    steps {
-			runWithTimeout(1, CCtestLib.&testfn, ['arg': "Hi there"])
+			runWithTimeout(1, &testfn, ['arg': "Hi there"])
 			sh 'pwd && ls'
 			sh 'sh autogen.sh'
 			sh './configure'
