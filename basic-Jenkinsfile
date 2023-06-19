@@ -9,6 +9,10 @@ def nonvoting_fail = 0
 def voting_fail = 0
 def lockfile ="unknown"
 
+void testfn(Map args)
+{
+    println("Called testfn with ${args['arg']}")
+}
 
 pipeline {
     agent { label 'fedora' }
