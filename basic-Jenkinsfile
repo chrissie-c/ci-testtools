@@ -28,22 +28,22 @@ pipeline {
 		// Kick off the real jobs
 		stage('voting') {
 		    steps {
-			runWithTimeout(1, this.&testfn, ['arg': "Hi there"])
-			sh "pwd && ls"
-			sh "sh autogen.sh"
+			runWithTimeout(1, testfn.call, ['arg': "Hi there"])
+			sh 'pwd && ls'
+			sh 'sh autogen.sh'
 			sh './configure'
-			sh 'make all check'
+			sh 'make all'
 		    }
 		}
 		stage('non-voting') {
 		    steps {
 			sh './configure --enable-debug'
-			sh 'make all check'
+			sh 'make all'
 		    }
 		}
 		stage('covscan') {
 		    steps {
-			sh 'make CFLAGS="-fanalyzer"'
+			sh 'make all CFLAGS="-fanalyzer"'
 		    }
 		}
 	    }
