@@ -12,10 +12,6 @@ def lockfile ="unknown"
 
 pipeline {
     agent { label 'fedora' }
-def testfn(Map args)
-{
-    println("Called testfn with ${args['arg']}")
-}
 
     stages {
 	// This is the main stage that covers everything
