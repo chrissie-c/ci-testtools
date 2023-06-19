@@ -1,9 +1,10 @@
 def call(int timeout, Closure fn, Map param)
 {
+    println("CC: in runWithTimeout: ${fn} ${param}");
     long startTime = System.currentTimeMillis()
     try {
 	timeout(time: timeout, unit: 'MINUTES') {
-	    fn(param)	    
+	    fn(param)
 	}
     } catch (err) {
 	long timePassed = System.currentTimeMillis() - startTime
