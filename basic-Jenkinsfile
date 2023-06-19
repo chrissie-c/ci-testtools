@@ -2,6 +2,7 @@
 // 1-May-2023    Chrissie Caulfield    original version for running 'old-style' jobs
 //
 
+@Library(['CCtestLib']) _
 
 // Globals
 def authcheck = true
@@ -11,7 +12,7 @@ def lockfile ="unknown"
 
 void testfn(Map args)
 {
-    println("Called testfn with ${args['arg']}")
+    println("Called local testfn with ${args['arg']}")
 }
 
 pipeline {
@@ -28,7 +29,7 @@ pipeline {
 		// Kick off the real jobs
 		stage('voting') {
 		    steps {
-			runWithTimeout(1, &testfn, ['arg': "Hi there"])
+			runWithTimeout(1, CCtestLib.&testfn, ['arg': "Hi there"])
 			sh 'pwd && ls'
 			sh 'sh autogen.sh'
 			sh './configure'
