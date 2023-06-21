@@ -1,7 +1,8 @@
 @Library(['CCtestLib']) _
 
 pipeline {
-    agent { label 'fedora' }
+//    agent { label 'fedora' }
+    agent any
 
     stages {
 	// This is the main stage that covers everything
