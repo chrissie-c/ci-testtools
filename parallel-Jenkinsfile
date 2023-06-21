@@ -1,0 +1,48 @@
+@Library(['CCtestLib']) _
+
+pipeline {
+    agent { label 'fedora' }
+
+    stages {
+	// This is the main stage that covers everything
+	stage('Start builds') {
+	    // All of the stages that actually do stuff
+	    parallel {
+		stage('parallel')  {
+		    stages {
+			// Kick off the real jobs
+			stage('voting') {
+			    steps {
+				sh 'pwd && ls'
+				sh 'sh autogen.sh'
+				sh './configure'
+				sh 'make all'
+			    }
+			}
+			stage('voting dist') {
+			    steps {
+				sh "make dist"
+			    }
+			}
+		    }
+		}
+		stage('others') {
+		    stages {
+			stage('non-voting') {
+			    steps {
+				sh './configure --enable-debug'
+				sh 'make all'
+			    }
+			}
+			stage('covscan') {
+			    steps {
+				sh 'make all CFLAGS="-fanalyzer"'
+			    }
+			}
+		    }
+		}
+	    }
+	}
+    }
+}
+
