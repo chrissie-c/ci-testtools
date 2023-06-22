@@ -24,7 +24,7 @@ def dumpBuildEnv(String agentName) {
     }
 }
 
-def call(String label) {
+def call(String label, Closure stepfunc) {
     def nodeList = getNodes(label)
     collectBuildEnv = [:]
 
@@ -35,7 +35,7 @@ def call(String label) {
         if (agentName != null) {
             println "Prearing task for " + agentName
             collectBuildEnv["node_" + agentName] = {
-                dumpBuildEnv(agentName)
+                stepfunc(agentName)
             }
         }
     }
