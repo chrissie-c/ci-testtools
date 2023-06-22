@@ -13,9 +13,10 @@ pipeline {
             
             steps {
                 script {
-		    collectBuildEnv = collectenv('rh')
-      
-                    parallel collectBuildEnv
+		    rh_env = collectenv('rh')
+		    deb_env = collectenv('debian')
+
+                    parallel rh_env + deb_env
                 }
             }
         }
