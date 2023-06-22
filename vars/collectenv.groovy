@@ -8,6 +8,9 @@ def getNodes(String label) {
         // if (thisAagent.labelString == "${label}") {
             return thisAgent.name
         }
+	else {
+	    println("CC: got node ${thisAgent} with ${thisAgent.labelString}");
+	}
     }
 }
 
