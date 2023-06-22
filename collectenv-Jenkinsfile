@@ -15,7 +15,7 @@ pipeline {
                 script {
 		    rh_env = collectenv('rh')
 		    println("CC: rh_env = ${rh_env}")
-		    deb_env = collectenv('debian')
+		    deb_env = collectenv('deb')
 		    println("CC: deb_env = ${deb_env}")
 
                     parallel rh_env + deb_env
