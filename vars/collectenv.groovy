@@ -24,10 +24,10 @@ def dumpBuildEnv(String agentName) {
 def call(String label) {
     def nodeList = getNodes(label)
     collectBuildEnv = [:]
-    
+
     for(i=0; i<nodeList.size(); i++) {
         def agentName = nodeList[i]
-        
+
         // skip the null entries in the nodeList
         if (agentName != null) {
             println "Prearing task for " + agentName
@@ -38,4 +38,3 @@ def call(String label) {
     }
     return collectBuildEnv
 }
-
