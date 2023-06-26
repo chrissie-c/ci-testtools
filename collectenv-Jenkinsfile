@@ -24,7 +24,17 @@ pipeline {
             
             steps {
                 script {
-		    rh_env = collectenv('rh', this.&runstuff)
+		    agentName='debian'
+		    rh_env = collectenv('rh', {
+			node("${agentName}") {
+			    stage("Env in ${agentName}") {
+				echo "running on agent, ${agentName}"
+				sh 'uname -a'
+				sh 'printenv'
+			    }
+			}
+		    }
+		    )
 		    println("CC: rh_env = ${rh_env}")
 		    deb_env = collectenv('deb', this.runstuff)
 		    println("CC: deb_env = ${deb_env}")
