@@ -1,5 +1,6 @@
 import jenkins.model.*
 
+// Returns all nodes that have the label
 @NonCPS
 def getNodes(String label) {
     jenkins.model.Jenkins.instance.nodes.collect { thisAgent ->
@@ -14,16 +15,8 @@ def getNodes(String label) {
     }
 }
 
-def dumpBuildEnv(String agentName) {
-    node("${agentName}") {
-        stage("Env in ${agentName}") {
-            echo "running on agent, ${agentName}"
-            sh 'uname -a'
-	    sh 'printenv'
-        }
-    }
-}
-
+// Builds up a map with all the nodes and the functions (steps) to call.
+// Pass the returned map to 'parallel'
 def call(String label, Closure stepfunc) {
     def nodeList = getNodes(label)
     collectBuildEnv = [:]
@@ -33,7 +26,6 @@ def call(String label, Closure stepfunc) {
 
         // skip the null entries in the nodeList
         if (agentName != null) {
-            println "Prearing task for " + agentName
             collectBuildEnv["node_" + agentName] = {
                 stepfunc(agentName)
             }
