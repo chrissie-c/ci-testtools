@@ -35,9 +35,9 @@ pipeline {
             steps {
                 script {
 		    agentName='debian'
-		    rh_env = collectenv('rh', this&.runstuff2)
+		    rh_env = collectenv('rh', this.&runstuff2)
 		    println("CC: rh_env = ${rh_env}")
-		    deb_env = collectenv('deb', this&.runstuff)
+		    deb_env = collectenv('deb', this.&runstuff)
 		    println("CC: deb_env = ${deb_env}")
 
                     parallel rh_env + deb_env
