@@ -2,7 +2,7 @@
 def runstuff(String agentName) {
     node("${agentName}") {
         stage("Env in ${agentName}") {
-            echo "running on agent, ${agentName}"
+            echo "'runstuff'running on agent, ${agentName}"
             sh 'uname -a'
 	    sh 'printenv'
         }
@@ -12,7 +12,7 @@ def runstuff(String agentName) {
 def runstuff2(String agentName) {
     node("${agentName}") {
         stage("Env in ${agentName}") {
-            echo "running on agent, ${agentName}"
+            echo "'runstuff2' running on agent, ${agentName}"
             sh 'uname -a'
 	    sh 'printenv'
         }
