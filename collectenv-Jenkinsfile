@@ -1,7 +1,7 @@
 
 def runstuff(String agentName) {
     node("${agentName}") {
-        stage("Env in ${agentName}") {
+        stage("runstuff on ${agentName}") {
             echo "'runstuff'running on agent, ${agentName}"
             sh 'uname -a'
 	    sh 'printenv'
@@ -11,7 +11,7 @@ def runstuff(String agentName) {
 
 def runstuff2(String agentName) {
     node("${agentName}") {
-        stage("Env in ${agentName}") {
+        stage("runstuff2 on ${agentName}") {
             echo "'runstuff2' running on agent, ${agentName}"
             sh 'uname -a'
 	    sh 'printenv'
@@ -30,15 +30,12 @@ pipeline {
     }
         
     stages {
-        stage('agents-tasks') {
+        stage('Do things') {
             
             steps {
                 script {
-		    agentName='debian'
 		    rh_env = collectenv('rh', this.&runstuff2)
-		    println("CC: rh_env = ${rh_env}")
 		    deb_env = collectenv('deb', this.&runstuff)
-		    println("CC: deb_env = ${deb_env}")
 
                     parallel rh_env + deb_env
                 }
