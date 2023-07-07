@@ -34,7 +34,7 @@ pipeline {
             
             steps {
                 script {
-		    sh "export ZZTESTENV=grot"
+		    env.ZZTESTENV=grot
 		    sh "env|sort"
 		    echo "----------------------------------"
 		    rh_env = collectenv('rh', this.&runstuff2)
