@@ -35,8 +35,9 @@ pipeline {
             steps {
                 script {
 		    envname='ZZTESTENV'
-		    env.${envname}='grot'
-		    sh 'env|sort'
+		    withEnv(["${envname}='grot'"]) {
+			sh 'env|sort'
+		    }
 		    echo '----------------------------------'
 		    rh_env = collectenv('rh', this.&runstuff2)
 		    deb_env = collectenv('deb', this.&runstuff)
