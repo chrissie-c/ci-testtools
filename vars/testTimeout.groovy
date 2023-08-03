@@ -12,7 +12,7 @@ def call(Integer time, String cmd)
 	println("Script error: ${ae}")
 	retval = 1
     } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException err) {
-	def cause = err.getCauses()[0]
+	def String cause = err.getCauses()[0]
 	if (cause.startsWith('org.jenkinsci.plugins.workflow.steps.TimeoutStepExecution$ExceededTimeout')) {
 	    println('Timeout exceeded')
 	    retval = 2
