@@ -6,12 +6,12 @@ def call(Integer timeout, String cmd)
     
     try {
 	timeout(time: timeout, unit: 'SECONDS' ) {
-	    sh cmd
+	    sh "${cmd}"
 	}
     } catch (hudson.AbortException ae) { // Script Error
 	println("Script error: ${ae}")
 	retval = 1
-    } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException fie) {
+    } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException err) {
 	def cause = err.getCauses()[0]
 	if (cause.startsWith('org.jenkinsci.plugins.workflow.steps.TimeoutStepExecution$ExceededTimeout')) {
 	    println('Timeout exceeded')
