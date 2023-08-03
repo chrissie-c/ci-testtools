@@ -42,7 +42,20 @@ pipeline {
 		    rh_env = collectenv('rh', this.&runstuff2)
 		    deb_env = collectenv('deb', this.&runstuff)
 
-                    parallel rh_env + deb_env
+		    //                    parallel rh_env + deb_env
+
+		    try {
+			timeout(time:5, units:'SECONDS') {
+			    sh "sleep 10"
+			}
+		    } catch (exp) {
+			def user = err.getCauses()[0].getUser()
+			println("Caught "+exp)
+			println("user: "+user);
+			println("causes: "+err.getCauses());
+			println("causes[0]: "+err.getCauses()[0]);
+///			if('SYSTEM' == user.toString()) { // SYSTEM means timeout.
+		    }
 
 		    mail to: "ccaulfie@redhat.com",
 			replyTo: 'chrissie@wizmail.org',
