@@ -45,7 +45,7 @@ pipeline {
 		    //                    parallel rh_env + deb_env
 
 		    try {
-			timeout(time:5, units:'SECONDS') {
+			timeout(time:5, unit:'SECONDS') {
 			    sh "sleep 10"
 			}
 		    } catch (exp) {
