@@ -48,9 +48,9 @@ pipeline {
 			timeout(time:5, unit:'SECONDS') {
 			    sh "sleep 10"
 			}
-		    } catch (exp) {
+		    } catch (err) {
 			def user = err.getCauses()[0].getUser()
-			println("Caught "+exp)
+			println("Caught "+err)
 			println("user: "+user);
 			println("causes: "+err.getCauses());
 			println("causes[0]: "+err.getCauses()[0]);
