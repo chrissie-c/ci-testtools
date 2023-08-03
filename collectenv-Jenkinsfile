@@ -44,7 +44,7 @@ pipeline {
 
 		    //                    parallel rh_env + deb_env
 
-		    def res = testTimeout("tjis does not work")
+		    def res = testTimeout(5, "sleep 10")
 		    println("res = "+res);
                 }
             }

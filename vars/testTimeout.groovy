@@ -1,7 +1,9 @@
 def call(Integer timeout, String cmd)
 {
     def retval = 0
+    println("In testTimeout")
 
+    
     try {
 	timeout(time: timeout, unit: 'SECONDS' ) {
 	    sh cmd
