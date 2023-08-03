@@ -46,7 +46,7 @@ pipeline {
 
 		    try {
 			timeout(time:500, unit:'SECONDS') {
-			    sh "sleep 10"
+			    sh "tjis does not work"
 			}
 		    } catch (err) {
 			testTimeout(err)
