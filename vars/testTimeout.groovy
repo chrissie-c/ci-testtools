@@ -1,11 +1,11 @@
-def call(Integer timeout, String cmd)
+def call(Integer time, String cmd)
 {
     def retval = 0
     println("In testTimeout")
 
     
     try {
-	timeout(time: timeout, unit: 'SECONDS' ) {
+	timeout(time: time, unit: 'SECONDS' ) {
 	    sh "${cmd}"
 	}
     } catch (hudson.AbortException ae) { // Script Error
