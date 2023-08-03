@@ -43,6 +43,11 @@ pipeline {
 		    deb_env = collectenv('deb', this.&runstuff)
 
                     parallel rh_env + deb_env
+
+		    mail to: "ccaulfie@redhat.com",
+			replyTo: 'chrissie@wizmail.org',
+			subject: 'this is a test of email',
+			body: 'lies a moulding in the grave'
                 }
             }
         }
