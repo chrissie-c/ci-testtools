@@ -3,8 +3,11 @@ def runstuff(String agentName) {
     node("${agentName}") {
         stage("runstuff on ${agentName}") {
             echo "'runstuff'running on agent, ${agentName}"
-            sh 'uname -a'
-	    sh 'printenv'
+	    dir ('test') {
+		getSCM()
+		sh 'uname -a'
+		sh 'printenv'
+	    }
         }
     }
 }
@@ -12,9 +15,12 @@ def runstuff(String agentName) {
 def runstuff2(String agentName) {
     node("${agentName}") {
         stage("runstuff2 on ${agentName}") {
-            echo "'runstuff2' running on agent, ${agentName}"
-            sh 'uname -a'
-	    sh 'printenv'
+	    dir ('test2') {
+		getSCM()
+		echo "'runstuff2' running on agent, ${agentName}"
+		sh 'uname -a'
+		sh 'printenv'
+	    }
         }
     }
 }
@@ -26,7 +32,8 @@ pipeline {
     }
         
     options {
-        timestamps()
+	// We do our own checkouts
+	skipDefaultCheckout(true)
     }
         
     stages {
@@ -34,6 +41,7 @@ pipeline {
             
             steps {
                 script {
+		    getSCM()
 		    envname='ZZTESTENV'
 		    withEnv(["${envname}='grot'"]) {
 			sh 'env|sort'
@@ -42,10 +50,7 @@ pipeline {
 		    rh_env = collectenv('rh', this.&runstuff2)
 		    deb_env = collectenv('deb', this.&runstuff)
 
-		    //                    parallel rh_env + deb_env
-
-		    def res = testTimeout(5, "sleep 10")
-		    println("res = "+res);
+		    parallel rh_env + deb_env
                 }
             }
         }
