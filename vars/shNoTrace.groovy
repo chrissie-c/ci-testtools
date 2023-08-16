@@ -1,4 +1,5 @@
 def call(String cmd, String visible) {
-    sh (script: '#!/bin/sh -e\n'+cmd, returnStdout: true)
+    def a = sh (script: '#!/bin/sh -e\n'+cmd, returnStdout: true)
     echo("${visible}")
+    echo ("${a}")
 }
