@@ -7,6 +7,11 @@ def runstuff(String agentName) {
 		getSCM()
 		sh 'uname -a'
 		sh 'printenv'
+		node('built-in') {
+		    echo "now we are back on built-in"
+		    sh 'uname -a'
+		    sh 'printenv'
+		}
 	    }
         }
     }
