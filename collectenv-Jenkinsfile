@@ -7,7 +7,7 @@ def runstuff(String agentName) {
 //		getSCM()
 		sh 'uname -a'
 		sh 'printenv'
-		shWithNoTrace("ls", "ls-redacted")
+		shNoTrace("ls", "ls-redacted")
 		node('built-in') {
 		    echo "now we are back on built-in"
 		    sh 'uname -a'
