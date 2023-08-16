@@ -4,7 +4,7 @@ def runstuff(String agentName) {
         stage("runstuff on ${agentName}") {
             echo "'runstuff'running on agent, ${agentName}"
 	    dir ('test') {
-		getSCM()
+//		getSCM()
 		sh 'uname -a'
 		sh 'printenv'
 		node('built-in') {
@@ -21,7 +21,7 @@ def runstuff2(String agentName) {
     node("${agentName}") {
         stage("runstuff2 on ${agentName}") {
 	    dir ('test2') {
-		getSCM()
+//		getSCM()
 		echo "'runstuff2' running on agent, ${agentName}"
 		sh 'uname -a'
 		sh 'printenv'
@@ -46,7 +46,7 @@ pipeline {
             
             steps {
                 script {
-		    getSCM()
+//		    getSCM()
 		    envname='ZZTESTENV'
 		    withEnv(["${envname}='grot'"]) {
 			sh 'env|sort'
