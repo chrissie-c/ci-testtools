@@ -8,6 +8,7 @@ def runstuff(String agentName) {
 		sh 'uname -a'
 		sh 'printenv'
 		shNoTrace('ls /', 'ls-redacted')
+		getNodes('rh')
 		node('built-in') {
 		    echo "now we are back on built-in"
 		    sh 'uname -a'
