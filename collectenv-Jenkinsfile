@@ -15,6 +15,11 @@ def runstuff(String agentName) {
 		    sh 'uname -a'
 		    sh 'printenv'
 		}
+		node('built-in') {
+		    echo "now we are back on built-in AGAIN"
+		    sh 'uname -a'
+		    sh 'printenv'
+		}
 	    }
         }
     }
