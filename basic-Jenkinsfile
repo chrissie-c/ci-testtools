@@ -16,7 +16,7 @@ void testfn(Map args)
 }
 
 pipeline {
-    agent { label none }
+    agent { label 'built-in' }
 
     stages {
 	// This is the main stage that covers everything
