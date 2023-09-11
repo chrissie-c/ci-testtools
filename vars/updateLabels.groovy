@@ -20,7 +20,8 @@ def call()
     }
 
     // Get the existing labels, so we don't lose "down" if it's present
-    def curlabels = Jenkins.instance.getNode("rhel").getLabelString().split()
+    def node_handle = Jenkins.instance.getNode(env.NODE_NAME)
+    def curlabels = node_handle.getLabelString().split()
     if (curlabels.contains('down')) {
 	newlabels_str += " down"
     }
