@@ -1,4 +1,4 @@
-
+@NonCPS
 def runStuff(String nodename, Map info)
 {
     prinln("runstuff: ${i}")
