@@ -1,7 +1,6 @@
-@NonCPS
 def runStuff(String nodename, Map info)
 {
-    prinln("runstuff: ${i}")
+    println("runstuff: ${i}")
     node("${nodename}") {
 	stage("do it on ${nodename}") {
 	    println("${env.NODE_NAME}")
@@ -15,7 +14,7 @@ def call(Map info)
     def allnodes = getAllNodes()
     for (i in allnodes) {
 	runmap[i] = {
-	    echo $i
+	    runstuff(i, info)
 	}
     }
     return runmap
