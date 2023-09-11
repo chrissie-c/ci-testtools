@@ -1,6 +1,7 @@
 
 def runStuff(String nodename, Map info)
 {
+    prinln("runstuff: ${i}")
     node("${nodename}") {
 	stage("do it on ${nodename}") {
 	    println("${env.NODE_NAME}")
