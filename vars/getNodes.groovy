@@ -6,6 +6,7 @@ def call()
 
     labels['rhel'] = ['rhel','rh','test1']
     labels['rhlaptop'] = ['fedora','rh', 'test2']
+    labels['debian-unstable'] = ['debian', 'test2']
     
     return labels
 }

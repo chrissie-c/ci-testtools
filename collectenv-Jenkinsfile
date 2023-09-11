@@ -30,6 +30,7 @@ def runstuff2(String agentName) {
     node("${agentName}") {
         stage("runstuff2 on ${agentName}") {
 	    dir ('test2') {
+		updateLabels()
 //		getSCM()
 		echo "'runstuff2' running on agent, ${agentName}"
 		sh 'uname -a'
