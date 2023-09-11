@@ -20,15 +20,14 @@ def call()
     }
     
     // Get the existing labels, so we don't lose "down" if it's present
-    def node_handle = Jenkins.instance.getNode("rhel")
-    def curlabels = node_handle.getLabelString().split()
+    def curlabels = Jenkins.instance.getNode("rhel").getLabelString().split()
     if (curlabels.contains('down')) {
-	newlabels += " down"
+	newlabels_str += " down"
     }
     println("CC: old labels: ${curlabels}")
     println("CC: new labels: ${newlabels}")    
 
     // Update Jenkins
-    node_handle.setLabelString(newlabels)
+    node_handle.setLabelString(newlabels_str)
     node_handle.save() // Write it to disk
 }
