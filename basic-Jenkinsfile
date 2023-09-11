@@ -17,7 +17,7 @@ def buildRun(Map info)
     for (i=0; i<allnodes.size(); i++) {
 	def agentName = allnodes[i]
 	runmap["_"+agentName] = {
-	    println("${env.NODE_NAME}")
+	    runStuff(agentName, info)
 	}
     }
     return runmap
