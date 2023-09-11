@@ -2,7 +2,9 @@
 def runStuff(String nodename ,Map info)
 {
     node("${nodename}") {
-	println("${env.NODE_NAME}")
+	stage("do it on ${nodename}") {
+	    println("${env.NODE_NAME}")
+	}
     }
 }
 
