@@ -28,7 +28,7 @@ pipeline {
 	stage('go') {
 	    steps {
 		script {
-		    info = [:]
+		    def info = [:]
 		    def map = buildRun(info)
 		    println(map)
 		    parallel map
