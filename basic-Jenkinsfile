@@ -9,10 +9,10 @@ pipeline {
 		script {
 		    allnodes = getAllNodes()
 		    println(allnodes)
-//		    node('built-in') {
-		    println ("${env.NODE_NAME}")
-		    sh 'env|sort'
-		    //		    }
+		    node('built-in') {
+			println ("${env.NODE_NAME}")
+		    //sh 'env|sort'
+		    }
 		}
 	    }
 	}
