@@ -9,12 +9,12 @@ pipeline {
 		script {
 		    allnodes = getAllNodes()
 		    echo allnodes
-		    node('built-in') {
+//		    node('built-in') {
 			steps {
 			    println ("${env.NODE_NAME}")
 			    sh 'env|sort'
 			}
-		    }
+//		    }
 		}
 	    }
 	}
