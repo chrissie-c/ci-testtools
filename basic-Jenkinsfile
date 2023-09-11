@@ -2,7 +2,11 @@ def runStuff(String nodeName, Map info)
 {
     node("${nodeName}") {
 	stage("do it on ${nodeName}") {
+
+	    // Update the labels for this node
 	    upateLabels(info)
+
+	    // Update ci-tools
 	    sh """
 cd $HOME
 if [ "$reinstall" = 1 ]; then
@@ -25,7 +29,7 @@ fi
     }
 }
 
-def buildRun(Map info)
+def buildRun(Map info, Closure thing)
 {
     def runmap = [:]
     def allnodes = getAllNodes()
@@ -33,7 +37,7 @@ def buildRun(Map info)
     for (i=0; i<allnodes.size(); i++) {
 	def agentName = allnodes[i]
 	runmap["_"+agentName] = {
-	    runStuff(agentName, info)
+	    thing(agentName, info)
 	}
     }
     return runmap
@@ -50,11 +54,11 @@ pipeline {
 		}
 	    }
 	}
-	// This is the main stage that covers everything
-	stage('go') {
+	// Do the bits that happen on all nodes
+	stage('multi-node') {
 	    steps {
 		script {
-		    map = buildRun(info)
+		    map = buildRun(info, {String nodeName, Map info -> runstuff(nodeName, info)})
 		    println(map)
 		    parallel map
 		}
