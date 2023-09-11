@@ -1,7 +1,7 @@
 
 def runStuff(String nodename ,Map info)
 {
-    node(nodename) {
+    node("${nodename}") {
 	println("${env.NODE_NAME}")
     }
 }
