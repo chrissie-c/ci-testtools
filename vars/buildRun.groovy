@@ -1,11 +1,11 @@
 def runStuff(String nodename, Map info)
 {
     println("runstuff: ${i}")
-    node("${nodename}") {
-	stage("do it on ${nodename}") {
-	    println("${env.NODE_NAME}")
-	}
-    }
+    // node("${nodename}") {
+    // 	stage("do it on ${nodename}") {
+    // 	    println("${env.NODE_NAME}")
+    // 	}
+    // }
 }
 
 def call(Map info)
