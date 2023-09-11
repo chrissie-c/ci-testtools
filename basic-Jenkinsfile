@@ -13,10 +13,11 @@ def buildRun(Map info)
 {
     def runmap = [:]
     def allnodes = getAllNodes()
+
     for (i=0; i<allnodes.size(); i++) {
 	def agentName = allnodes[i]
 	runmap["_"+agentName] = {
-	    println("hello")
+	    println("${env.NODE_NAME}")
 	}
     }
     return runmap
