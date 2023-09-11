@@ -12,11 +12,11 @@ def runStuff(String nodeName, Map info)
 def buildRun(Map info)
 {
     def runmap = [:]
-    allnodes = getAllNodes()
+    def allnodes = getAllNodes()
     for (i=0; i<allnodes.size(); i++) {
 	def agentName = allnodes[i]
 	runmap[agentName] = {
-	    runStuff(agentName, info)
+	    println("hello")
 	}
     }
     return runmap
