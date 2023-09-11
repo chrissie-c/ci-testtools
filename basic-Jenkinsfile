@@ -10,41 +10,36 @@ def nonvoting_fail = 0
 def voting_fail = 0
 def lockfile ="unknown"
 
+import Jenkins.instance.*
+getAllNodes()
+{
+    allnodes=[]
+    a= Jenkins.instance.getNodes()
+    for (i in a) {
+	allnodes += i.getNodeName()
+    }
+    return allnodes
+}
+
+
 void testfn(Map args)
 {
     println("Called local testfn with ${args['arg']}")
 }
 
 pipeline {
-    agent { label 'fedora' }
+    agent { label none }
 
     stages {
 	// This is the main stage that covers everything
-	stage('Start builds') {
-	    environment{
-		CREDS = credentials("489d4ea3-11c9-40ab-a794-54197b51f081")
-	    }
-	    // All of the stages that actually do stuff
-	    stages {
-		// Kick off the real jobs
-		stage('voting') {
-		    steps {
-			runWithTimeout(1, CCtestLib.&testfn, ['arg': "Hi there"])
-			sh 'pwd && ls'
-			sh 'sh autogen.sh'
-			sh './configure'
-			sh 'make all'
-		    }
-		}
-		stage('non-voting') {
-		    steps {
-			sh './configure --enable-debug'
-			sh 'make all'
-		    }
-		}
-		stage('covscan') {
-		    steps {
-			sh 'make all CFLAGS="-fanalyzer"'
+	stage('getnodes') {
+	    steps {
+		script {
+		    allnodes = getAllNodes()
+		    node(allnodes) {
+			steps {
+			    println ("${env.NODE_NAME}")
+			}
 		    }
 		}
 	    }
