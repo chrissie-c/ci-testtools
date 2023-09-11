@@ -1,6 +1,12 @@
 def runStuff(String nodename, Map info)
 {
     println("runstuff: ${nodename}")
+    node("${nodename}") {
+	stage("do it on ${nodename}") {
+	    println("${env.NODE_NAME}")
+	}
+    }
+    println("end")
 }
 
 def buildRun(Map info)
@@ -15,7 +21,8 @@ def buildRun(Map info)
     return runmap
 }
 
-def info = [:]
+def info = ['test':'value']
+
 pipeline {
     agent { label 'built-in' }
 
