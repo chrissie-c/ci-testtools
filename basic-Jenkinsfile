@@ -13,6 +13,7 @@ def buildRun(Map info)
 	    runStuff(info)
 	}
     }
+    return runmap
 }
 
 pipeline {
@@ -20,7 +21,7 @@ pipeline {
 
     stages {
 	// This is the main stage that covers everything
-	stage('getnodes') {
+	stage('go') {
 	    steps {
 		script {
 		    info = [:]
