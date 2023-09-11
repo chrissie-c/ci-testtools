@@ -27,7 +27,11 @@ pipeline {
 
     stages {
 	stage('info') {
-	    def info = ['test':'value']	    
+	    steps {
+		script {
+		    info = ['test':'value']
+		}
+	    }
 	}
 	// This is the main stage that covers everything
 	stage('go') {
