@@ -1,5 +1,5 @@
 
-def runStuff(String nodename ,Map info)
+def runStuff(String nodename, Map info)
 {
     node("${nodename}") {
 	stage("do it on ${nodename}") {
@@ -14,7 +14,7 @@ def buildRun(Map info)
     def allnodes = getAllNodes()
     for (i in allnodes) {
 	runmap[i] = {
-	    runStuff(i, info)
+	    runStuff("${i}", info)
 	}
     }
     return runmap
