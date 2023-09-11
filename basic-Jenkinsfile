@@ -40,7 +40,7 @@ pipeline {
 		script {
 		    map = buildRun(info)
 		    println(map)
-		    parallel map
+		     map
 		}
 	    }
 	}
