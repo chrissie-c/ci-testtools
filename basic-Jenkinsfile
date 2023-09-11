@@ -1,11 +1,6 @@
-def runStuff(String nodename)
+def runStuff(String nodename, Map info)
 {
     println("runstuff: ${nodename}")
-    node("${nodename}") {
-	stage("do it on ${nodename}") {
-	    println("${env.NODE_NAME}")
-	}
-    }
 }
 
 def buildRun(Map info)
@@ -14,7 +9,7 @@ def buildRun(Map info)
     def allnodes = getAllNodes()
     for (i in allnodes) {
 	runmap["_${i}"] = {
-	    runStuff("${i}")
+	    runStuff("${i}", info)
 	}
     }
     return runmap
