@@ -1,6 +1,6 @@
 import Jenkins.instance.*
 
-@nonCPS
+@NonCPS
 def call()
 {
     allnodes=[]
