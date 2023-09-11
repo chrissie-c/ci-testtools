@@ -14,8 +14,9 @@ def buildRun(Map info)
     def runmap = [:]
     def allnodes = getAllNodes()
     for (i in allnodes) {
+	def agentName = i
 	runmap["_${i}"] = {
-	    runStuff(i, info)
+	    runStuff(agentName, info)
 	}
     }
     return runmap
