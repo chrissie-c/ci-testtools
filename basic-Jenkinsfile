@@ -22,8 +22,6 @@ def buildRun(Map info)
     return runmap
 }
 
-def info = ['test':'value']
-
 pipeline {
     agent { label 'built-in' }
 
@@ -32,6 +30,7 @@ pipeline {
 	stage('go') {
 	    steps {
 		script {
+		    def info = ['test':'value']
 		    def map = buildRun(info)
 		    println(map)
 		    parallel map
