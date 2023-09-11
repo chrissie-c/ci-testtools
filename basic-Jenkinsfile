@@ -1,3 +1,24 @@
+def runStuff(String nodename, Map info)
+{
+    println("runstuff: ${i}")
+    node("${nodename}") {
+	stage("do it on ${nodename}") {
+	    println("${env.NODE_NAME}")
+	}
+    }
+}
+
+def buildRun(Map info)
+{
+    def runmap = [:]
+    def allnodes = getAllNodes()
+    for (i in allnodes) {
+	runmap[i] = {
+	    runStuff(i, info)
+	}
+    }
+    return runmap
+}
 
 pipeline {
     agent { label 'built-in' }
