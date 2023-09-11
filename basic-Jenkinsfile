@@ -1,7 +1,9 @@
 
-def runStuff(Map info)
+def runStuff(String nodename ,Map info)
 {
-    println("${env.NODE_NAME}")
+    node(nodename) {
+	println("${env.NODE_NAME}")
+    }
 }
 
 def buildRun(Map info)
@@ -10,7 +12,7 @@ def buildRun(Map info)
     def allnodes = getAllNodes()
     for (i in allnodes) {
 	runmap[i] = {
-	    runStuff(info)
+	    runStuff(i, info)
 	}
     }
     return runmap
