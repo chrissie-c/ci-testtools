@@ -15,7 +15,7 @@ def buildRun(Map info)
     def allnodes = getAllNodes()
     for (i=0; i<allnodes.size(); i++) {
 	def agentName = allnodes[i]
-	runmap[agentName] = {
+	runmap["_"+agentName] = {
 	    println("hello")
 	}
     }
