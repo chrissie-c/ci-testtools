@@ -3,13 +3,11 @@ import Jenkins.instance.*
 @NonCPS
 def call()
 {
-    def allnodes=[]
-    
-    a = Jenkins.instance.getNodes()
-    for (i=0; i<a.size(); i++) {
-	def node = "${a[i].getNodeName()}"
-	allnodes += node
+    def nodelist =[]
+    for (thisAgent in jenkins.model.Jenkins.instance.nodes) {
+        labelarray = thisAgent.labelString.split(' ')
+        nodelist += thisAgent.name
     }
-    return allnodes
+    return nodelist
 }
 
