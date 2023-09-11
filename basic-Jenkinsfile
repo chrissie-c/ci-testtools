@@ -1,15 +1,3 @@
-// Jenkinsfile for the knet-ci-test/main project
-// 1-May-2023    Chrissie Caulfield    original version for running 'old-style' jobs
-//
-
-@Library(['CCtestLib']) _
-
-// Globals
-def authcheck = true
-def nonvoting_fail = 0
-def voting_fail = 0
-def lockfile ="unknown"
-
 import Jenkins.instance.*
 getAllNodes()
 {
