@@ -2,10 +2,11 @@ import Jenkins.instance.*
 
 def call()
 {    
+    println("CC: updateLabels")
     def nodes = getNodes()
     def newlabels_arr = nodes[env.NODE_NAME]
 
-    println("Update Labels on ${env.NODE_NAME} - array="+newlabels_arr)
+    println("CC: Update Labels on ${env.NODE_NAME} - array="+newlabels_arr)
     
     // Don't update built-in or other nodes with no labels in getNodes()
     if (newlabels_arr == null || newlabels_arr.size() == 0) {
