@@ -1,11 +1,11 @@
 def runStuff(String nodeName, Map info)
 {
     println("runstuff: ${nodeName}")
-    // node("${nodeName}") {
-    // 	stage("do it on ${nodeName}") {
-    // 	    println("${env.NODE_NAME}")
-    // 	}
-    // }
+    node("${nodeName}") {
+	stage("do it on ${nodeName}") {
+	    println("${env.NODE_NAME}")
+	}
+    }
     println("end")
 }
 
@@ -26,12 +26,14 @@ pipeline {
     agent { label 'built-in' }
 
     stages {
+	stage('info') {
+	    def info = ['test':'value']	    
+	}
 	// This is the main stage that covers everything
 	stage('go') {
 	    steps {
 		script {
-		    def info = ['test':'value']
-		    def map = buildRun(info)
+		    map = buildRun(info)
 		    println(map)
 		    parallel map
 		}
