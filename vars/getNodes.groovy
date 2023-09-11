@@ -4,8 +4,8 @@ def call()
 {
     def labels = [:]
 
-    nodes['rhel'] = ['rhel','rh','test1']
-    nodes['rhlaptop'] = ['fedora','rh', 'test2']
+    labels['rhel'] = ['rhel','rh','test1']
+    labels['rhlaptop'] = ['fedora','rh', 'test2']
     
     return labels
 }
