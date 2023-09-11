@@ -9,9 +9,9 @@ pipeline {
 		script {
 		    allnodes = getAllNodes()
 		    println(allnodes)
-		    node(allnodes) {
+		    //node(allnodes) {
 			println ("${env.NODE_NAME}")
-		    }
+		    //}
 		}
 	    }
 	}
