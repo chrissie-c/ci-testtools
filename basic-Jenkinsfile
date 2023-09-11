@@ -1,12 +1,28 @@
 def runStuff(String nodeName, Map info)
 {
-    println("runstuff: ${nodeName}")
     node("${nodeName}") {
 	stage("do it on ${nodeName}") {
-	    sh 'uname -a'
+	    upateLabels(info)
+	    sh """
+cd $HOME
+if [ "$reinstall" = 1 ]; then
+ rm -rf ci-tools
+fi
+if [ -d ci-tools ]; then
+ cd ci-tools
+ git pull
+ cd -
+else
+ git clone https://github.com/kronosnet/ci-tools.git
+fi
+
+if [ "${NODE_NAME}" = master ] || [ "${NODE_NAME}" = built-in ]; then
+ rm -rf $HOME/ci-tools/jenkins-cli.jar
+ wget -O $HOME/ci-tools/jenkins-cli.jar https://ci.kronosnet.org/jnlpJars/jenkins-cli.jar >/dev/null 2>&1
+fi
+"""
 	}
     }
-    println("end")
 }
 
 def buildRun(Map info)
