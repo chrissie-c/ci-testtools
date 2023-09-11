@@ -1,4 +1,9 @@
 
+def runStuff(Map info)
+{
+    println("${env.NODE_NAME}")
+}
+
 def buildRun(Map info)
 {
     def runmap = [:]
