@@ -14,7 +14,7 @@ def buildRun(Map info)
     def allnodes = getAllNodes()
     for (i in allnodes) {
 	runmap[i] = {
-	    this.&runStuff("${i}", info)
+	    echo $i
 	}
     }
     return runmap
