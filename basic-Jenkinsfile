@@ -13,13 +13,14 @@ def buildRun(Map info)
     def runmap = [:]
     def allnodes = getAllNodes()
     for (i in allnodes) {
-	runmap["_" + i] = {
+	runmap["_${i}"] = {
 	    runStuff("${i}", info)
 	}
     }
     return runmap
 }
 
+def info = [:]
 pipeline {
     agent { label 'built-in' }
 
@@ -28,7 +29,6 @@ pipeline {
 	stage('go') {
 	    steps {
 		script {
-		    def info = [:]
 		    def map = buildRun(info)
 		    println(map)
 		    parallel map
@@ -37,4 +37,3 @@ pipeline {
 	}
     }
 }
-
