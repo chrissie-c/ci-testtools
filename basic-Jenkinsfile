@@ -40,9 +40,19 @@ pipeline {
 		script {
 		    map = buildRun(info)
 		    println(map)
-		     map
+		    parallel map
 		}
 	    }
+	}
+	stage('gone') {
+	    steps {
+		echo "gone"
+	    }
+	}
+    }
+    post {
+	always {
+	    echo "finished"
 	}
     }
 }
