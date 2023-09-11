@@ -12,9 +12,9 @@ def call(Map info)
 {
     def runmap = [:]
     def allnodes = getAllNodes()
-    for (i in allnodes) {
-	runmap[i] = {
-	    runstuff(i, info)
+    for (i=0; i< allnodes.size(); i++) {
+	runmap[allnodes[i]] = {
+	    runstuff(allnodes[i], info)
 	}
     }
     return runmap
