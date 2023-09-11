@@ -44,15 +44,5 @@ pipeline {
 		}
 	    }
 	}
-	stage('gone') {
-	    steps {
-		echo "gone"
-	    }
-	}
-    }
-    post {
-	always {
-	    echo "finished"
-	}
     }
 }
