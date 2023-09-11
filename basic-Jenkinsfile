@@ -8,7 +8,7 @@ pipeline {
 	    steps {
 		script {
 		    allnodes = getAllNodes()
-		    echo allnodes
+		    println(allnodes)
 //		    node('built-in') {
 			steps {
 			    println ("${env.NODE_NAME}")
