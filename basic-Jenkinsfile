@@ -58,7 +58,8 @@ pipeline {
 	stage('multi-node') {
 	    steps {
 		script {
-		    map = buildRun(info, {String nodeName, Map info -> runstuff(nodeName, info)})
+		    //		    map = buildRun(info, {String nodeName, Map info -> runstuff(nodeName, info)})
+		    map = buildRun(info, {String nodeName, Map info -> updateLabels(nodeNameinfo)})
 		    println(map)
 		    parallel map
 		}
