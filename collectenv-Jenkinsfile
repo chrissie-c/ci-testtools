@@ -46,6 +46,9 @@ def collectenv(String label) {
     return collectBuildEnv
 }
 
+def callThing()
+{}
+
 pipeline {
     agent {
         label "built-in"
@@ -59,9 +62,7 @@ pipeline {
     stages {
 	stage('do quiet thing') {
 	    steps {
-		script {
-		    def a=123
-		}
+		callThing()
 	    }
 	}
         stage('Do things') {
