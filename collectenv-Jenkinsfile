@@ -5,9 +5,7 @@ def runstuff(String agentName) {
     node("${agentName}") {
         stage("runstuff on ${agentName}") {
             echo "'runstuff'running on agent, ${agentName}"
-//	    updateLabels()
 	    dir ('test') {
-//		getSCM()
 		sh 'uname -a'
 		sh 'printenv'
 		shNoTrace('ls /', 'ls-redacted')
@@ -28,25 +26,10 @@ def runstuff(String agentName) {
     }
 }
 
-def runstuff2(String agentName) {
-    node("${agentName}") {
-        stage("runstuff2 on ${agentName}") {
-	    dir ('test2') {
-//		updateLabels()
-//		getSCM()
-		echo "'runstuff2' running on agent, ${agentName}"
-		sh 'uname -a'
-		sh 'printenv'
-	    }
-        }
-    }
-}
-
-
 
 // Builds up a map with all the nodes and the functions (steps) to call.
 // Pass the returned map to 'parallel'
-def collectenv(String label, Closure stepfunc) {
+def collectenv(String label) {
     def nodeList = getNodes(label)
     collectBuildEnv = [:]
 
@@ -56,13 +39,12 @@ def collectenv(String label, Closure stepfunc) {
         // skip the null entries in the nodeList
         if (agentName != null) {
             collectBuildEnv["node_" + agentName] = {
-                stepfunc(agentName)
+                runstuff(agentName)
             }
         }
     }
     return collectBuildEnv
 }
-
 
 pipeline {
     agent {
@@ -85,8 +67,8 @@ pipeline {
 			sh 'env|sort'
 		    }
 		    echo '----------------------------------'
-		    rh_env = collectenv('rh', { runstuff2() })
-		    deb_env = collectenv('deb', { runstuff() } )
+		    rh_env = collectenv('rh')
+		    deb_env = collectenv('deb')
 
 		    parallel rh_env + deb_env
 
