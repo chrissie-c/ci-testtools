@@ -43,6 +43,27 @@ def runstuff2(String agentName) {
 }
 
 
+
+// Builds up a map with all the nodes and the functions (steps) to call.
+// Pass the returned map to 'parallel'
+def collectenv(String label, Closure stepfunc) {
+    def nodeList = getNodes(label)
+    collectBuildEnv = [:]
+
+    for(i=0; i<nodeList.size(); i++) {
+        def agentName = nodeList[i]
+
+        // skip the null entries in the nodeList
+        if (agentName != null) {
+            collectBuildEnv["node_" + agentName] = {
+                stepfunc(agentName)
+            }
+        }
+    }
+    return collectBuildEnv
+}
+
+
 pipeline {
     agent {
         label "built-in"
