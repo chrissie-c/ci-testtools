@@ -47,7 +47,9 @@ def collectenv(String label) {
 }
 
 def callThing()
-{}
+{
+    println("not so quiet now")
+}
 
 pipeline {
     agent {
