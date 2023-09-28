@@ -85,8 +85,8 @@ pipeline {
 			sh 'env|sort'
 		    }
 		    echo '----------------------------------'
-		    rh_env = collectenv('rh', runstuff2)
-		    deb_env = collectenv('deb', runstuff)
+		    rh_env = collectenv('rh', { runstuff2() })
+		    deb_env = collectenv('deb', { runstuff() } )
 
 		    parallel rh_env + deb_env
 
