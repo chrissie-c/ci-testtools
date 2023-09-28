@@ -5,7 +5,7 @@ def runstuff(String agentName) {
     node("${agentName}") {
         stage("runstuff on ${agentName}") {
             echo "'runstuff'running on agent, ${agentName}"
-	    updateLabels()
+//	    updateLabels()
 	    dir ('test') {
 //		getSCM()
 		sh 'uname -a'
@@ -32,7 +32,7 @@ def runstuff2(String agentName) {
     node("${agentName}") {
         stage("runstuff2 on ${agentName}") {
 	    dir ('test2') {
-		updateLabels()
+//		updateLabels()
 //		getSCM()
 		echo "'runstuff2' running on agent, ${agentName}"
 		sh 'uname -a'
@@ -85,8 +85,8 @@ pipeline {
 			sh 'env|sort'
 		    }
 		    echo '----------------------------------'
-		    rh_env = collectenv('rh', this.&runstuff2)
-		    deb_env = collectenv('deb', this.&runstuff)
+		    rh_env = collectenv('rh', runstuff2)
+		    deb_env = collectenv('deb', runstuff)
 
 		    parallel rh_env + deb_env
 
