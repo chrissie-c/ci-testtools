@@ -57,6 +57,13 @@ pipeline {
     }
         
     stages {
+	stage('do quiet thing') {
+	    steps {
+		script {
+		    def a=123
+		}
+	    }
+	}
         stage('Do things') {
             
             steps {
