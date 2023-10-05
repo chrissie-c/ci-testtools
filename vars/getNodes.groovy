@@ -2,6 +2,11 @@
 // Return the whole node array
 def call()
 {
+
+    // TEST something entirely unrelated
+    echo "${currentBuild.getCauses}"
+    echo "${currentBuild.getCauses.shortDescription}"
+
     def labels = [:]
 
     labels['rhel'] = ['rhel','rh','test1']
