@@ -4,8 +4,8 @@ def call()
 {
 
     // TEST something entirely unrelated
-    echo "${currentBuild.getCauses}"
-    echo "${currentBuild.getCauses.shortDescription}"
+    echo "${currentBuild.getBuildCauses}"
+    echo "${currentBuild.getBuildCauses.shortDescription}"
 
     def labels = [:]
 
