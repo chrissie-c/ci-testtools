@@ -8,7 +8,7 @@ def runstuff(String agentName) {
 	    dir ('test') {
 		sh 'uname -a'
 		sh 'printenv'
-		shNoTrace('ls /', 'ls-redacted')
+		shNoTrace('ls /', 'Redacted')
 		a=getNodes('rh')
 		println("CC: "+a)
 		node('built-in') {
