@@ -28,27 +28,11 @@ def runstuff(String agentName) {
     }
 }
 
-@NonCPS
-def test666()
-{
-    def cienv=[:]
-
-    def path = sh(script: "echo \$PATH", returnStdout: true).trim()
-    println("path class: "+path.getClass())
-    cienv['PATH'] = "/opt/coverity/bin:${path}"
-    println(cienv)
-
-    return cienv
-}
-
 // Builds up a map with all the nodes and the functions (steps) to call.
 // Pass the returned map to 'parallel'
 def collectenv(String label) {
     def nodeList = getNodes(label)
     collectBuildEnv = [:]
-
-    def a = [:]
-    a += test666()
     
     for(i=0; i<nodeList.size(); i++) {
         def agentName = nodeList[i]
