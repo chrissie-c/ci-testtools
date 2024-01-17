@@ -1,6 +1,8 @@
 def project='test'
 def info=['project': project]
 
+
+
 def runstuff(String agentName) {
     node("${agentName}") {
         stage("runstuff on ${agentName}") {
@@ -27,12 +29,33 @@ def runstuff(String agentName) {
 }
 
 
+@NonCPS
+def test1()
+{
+    def a=[:]
+    return a
+}
+
+def test2()
+{
+    def a=[:]
+    return a
+}
+
+
 // Builds up a map with all the nodes and the functions (steps) to call.
 // Pass the returned map to 'parallel'
 def collectenv(String label) {
     def nodeList = getNodes(label)
     collectBuildEnv = [:]
 
+
+    def t1 = test1()
+    def t2 = test2()
+    println('CC: type of t1 is'+t1.getClass())
+    println('CC: type of t2 is'+t2.getClass())
+
+    
     for(i=0; i<nodeList.size(); i++) {
         def agentName = nodeList[i]
 
