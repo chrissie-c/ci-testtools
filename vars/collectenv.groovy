@@ -15,10 +15,29 @@ def getNodes(String label) {
     }
 }
 
+@NonCPS
+def test1()
+{
+    def a=[:]
+    return a
+}
+
+def test2()
+{
+    def a=[:]
+    return a
+}
+
 // Builds up a map with all the nodes and the functions (steps) to call.
 // Pass the returned map to 'parallel'
 def call(String label, Closure stepfunc) {
     def nodeList = getNodes(label)
+
+    def t1 = test1()
+    def t2 = test2()
+    println('CC: type of t1 is'+t1.getClass())
+    println('CC: type of t2 is'+t2.getClass())
+    
     collectBuildEnv = [:]
 
     for(i=0; i<nodeList.size(); i++) {
