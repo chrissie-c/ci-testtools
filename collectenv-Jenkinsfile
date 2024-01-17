@@ -28,7 +28,7 @@ def runstuff(String agentName) {
     }
 }
 
-@NonCPS
+
 def test666()
 {
     def cienv=[:]
