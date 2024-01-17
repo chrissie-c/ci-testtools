@@ -36,6 +36,8 @@ def test666()
     def path = sh(script: "echo \$PATH", returnStdout: true).trim()
     cienv['PATH'] = "/opt/coverity/bin:${path}"
     println(cienv)
+
+    return cienv
 }
 
 // Builds up a map with all the nodes and the functions (steps) to call.
@@ -43,6 +45,9 @@ def test666()
 def collectenv(String label) {
     def nodeList = getNodes(label)
     collectBuildEnv = [:]
+
+    def a = [:]
+    a += test666()
     
     for(i=0; i<nodeList.size(); i++) {
         def agentName = nodeList[i]
