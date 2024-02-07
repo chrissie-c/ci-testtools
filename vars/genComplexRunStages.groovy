@@ -23,6 +23,7 @@ def call(Boolean do_zstream)
     def runjobs = [:]
 
     for (p in providers) {
+	def prov = p.key
 	def pinfo = providers[p.key]
 	def maxjobs = pinfo['maxjobs'] // max parallel
 	def jobs_per_stage = Math.round((jobs.size() / maxjobs) + 0.5)
@@ -39,8 +40,7 @@ def call(Boolean do_zstream)
 	    println(joblist)
 	    // TODO this should actually be a call runComplexStage()
 	    // To be fed into 'parallel'
-	    //runjobs["${p.key} ${s}"] = ['provider': p.key, 'pinfo': pinfo, 'jobs': joblist, 'zstream': do_zstream]
-	    runjobs["${p.key} ${s}"] = { runComplexStage(['provider': "${p.key}", 'pinfo': pinfo, 'jobs': joblist, 'zstream': do_zstream]) }
+	    runjobs["${prov} ${s}"] = { runComplexStage(['provider': prov, 'pinfo': pinfo, 'jobs': joblist, 'zstream': do_zstream]) }
 	}
     }
     return runjobs
