@@ -22,12 +22,13 @@ def call(Boolean do_zstream)
     // List of things to run on all providers
     def runjobs = [:]
 
+    // Build the jobs list
     for (p in providers) {
 	def prov = p.key
-	def pinfo = providers[p.key]
+	def pinfo = providers[prov]
 	def maxjobs = pinfo['maxjobs'] // max parallel
 	def jobs_per_stage = Math.round((jobs.size() / maxjobs) + 0.5)
-	println("jobs per stage for ${p.key}: ${jobs_per_stage} (max concurrent = ${maxjobs})")
+	println("jobs per stage for ${prov}: ${jobs_per_stage} (max concurrent = ${maxjobs})")
 
 	// Build the jobs
 	def s = 0
@@ -38,11 +39,10 @@ def call(Boolean do_zstream)
 		s += 1
 	    }
 	    println(joblist)
-	    // TODO this should actually be a call runComplexStage()
-	    // To be fed into 'parallel'
 	    runjobs["${prov} ${s}"] = { runComplexStage(['provider': prov, 'pinfo': pinfo, 'jobs': joblist, 'zstream': do_zstream]) }
 	}
     }
+    // Feed this into 'parallel'
     return runjobs
 }
 
@@ -62,7 +62,7 @@ def runComplexStage(Map stageinfo)
 	    def result = 0
 	    stage("${s} Smoke") {
 		result = sh "echo ${provider} ${s} smoke"
-		result = 0
+		result = 0 // TEST
 		if (result != 0 && stageinfo['fatal'] == true) {
 		    running = false
 		}
@@ -73,7 +73,7 @@ def runComplexStage(Map stageinfo)
 		stage("${s} All") {
 		    result = sh "echo ${provider} ${s} all"
 		}
-		result = 0
+		result = 0 // TEST
 		if (result != 0) {
 		    running = false
 		}
