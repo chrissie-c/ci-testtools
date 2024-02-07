@@ -67,7 +67,7 @@ def runComplexStage(Map stageinfo)
 
 	    }
 	    // If that succeeds and provider allows 'all' then run all
-	    if (result == 0 && provider['testlevel'] == 'all') {
+	    if (result == 0 && pinfo['testlevel'] == 'all') {
 		stage("${s} All") {
 		    result = sh "echo ${provider} ${s} all"
 		}
