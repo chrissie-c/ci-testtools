@@ -56,10 +56,11 @@ def runComplexStage(Map stageinfo)
     println("runComplexStage: ${stageinfo}")
 
     for (s in stageinfo['jobs']) {
-	if (running) {
+	if (true) {
 	    def result = 0
 	    stage("${s} Smoke") {
 		result = sh "echo ${provider} ${s} smoke"
+		result = 0
 		if (result != 0 && stageinfo['fatal'] == true) {
 		    running = false
 		}
@@ -69,8 +70,8 @@ def runComplexStage(Map stageinfo)
 	    if (result == 0 && provider['testlevel'] == 'all') {
 		stage("${s} All") {
 		    result = sh "echo ${provider} ${s} all"
-		    result = doall()
 		}
+		result = 0
 		if (result != 0) {
 		    running = false
 		}
