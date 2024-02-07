@@ -59,7 +59,7 @@ def runComplexStage(Map stageinfo)
 	if (running) {
 	    stage("${s} Smoke") {
 		def result = sh "echo ${provider} ${s} smoke"
-		if (result != 0 && provider['fatal'] == true) {
+		if (result != 0 && stageinfo['fatal'] == true) {
 		    running = false
 		}
 
