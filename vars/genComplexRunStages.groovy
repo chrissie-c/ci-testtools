@@ -3,9 +3,9 @@ def call(Boolean do_zstream)
 {
     // These could be parameters to the call....
     def providers = [:]
-    providers['osp'] = ['maxjobs': 255, 'fatal': false, 'testlevel': 'smoke']
+    providers['osp'] = ['maxjobs': 255, 'fatal': false, 'testlevel': 'all']
     providers['aws'] = ['maxjobs': 1, 'fatal': true, 'testlevel': 'all']
-    providers['ibmvpc'] = ['maxjobs': 2, 'fatal': true, 'testlevel': 'all']
+    providers['ibmvpc'] = ['maxjobs': 2, 'fatal': true, 'testlevel': 'smoke']
 
     def versions = ['rhel8 next-stable', 'rhel9 next-stable', 'rhel9 main']
     def branches = ['nightly','zstream']
@@ -40,7 +40,7 @@ def call(Boolean do_zstream)
 	    // TODO this should actually be a call runComplexStage()
 	    // To be fed into 'parallel'
 	    //runjobs["${p.key} ${s}"] = ['provider': p.key, 'pinfo': pinfo, 'jobs': joblist, 'zstream': do_zstream]
-	    runjobs["${p.key} ${s}"] = { runComplexStage(['provider': p.key, 'pinfo': pinfo, 'jobs': joblist, 'zstream': do_zstream]) }
+	    runjobs["${p.key} ${s}"] = { runComplexStage(['provider': "${p.key}", 'pinfo': pinfo, 'jobs': joblist, 'zstream': do_zstream]) }
 	}
     }
     return runjobs
@@ -56,7 +56,7 @@ def runComplexStage(Map stageinfo)
     println("runComplexStage: ${stageinfo}")
 
     for (s in stageinfo['jobs']) {
-	if (true) {
+	if (true) { // running
 	    def result = 0
 	    stage("${s} Smoke") {
 		result = sh "echo ${provider} ${s} smoke"
