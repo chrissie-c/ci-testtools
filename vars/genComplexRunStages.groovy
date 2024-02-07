@@ -53,6 +53,8 @@ def runComplexStage(Map stageinfo)
     def pinfo = stageinfo['pinfo']
     def running = true
 
+    println("rcs: provider: ${provider}")
+    println("rcs: pinfo: ${pinfo}");
     println("runComplexStage: ${stageinfo}")
 
     for (s in stageinfo['jobs']) {
