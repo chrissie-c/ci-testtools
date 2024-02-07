@@ -63,25 +63,13 @@ pipeline {
     }
         
     stages {
-	stage('do quiet thing') {
-	    steps {
-		callThing()
-	    }
-	}
         stage('Do things') {
             
             steps {
                 script {
-//		    getSCM()
-		    envname='ZZTESTENV'
-		    withEnv(["${envname}='grot'"]) {
-			sh 'env|sort'
-		    }
-		    echo '----------------------------------'
-		    rh_env = collectenv('rh')
-		    deb_env = collectenv('deb')
+		    def jobs = genComplexRunStages(true)
 
-		    parallel rh_env + deb_env
+		    parallel jobs
 
 		    println(info)
                 }
