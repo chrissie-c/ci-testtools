@@ -57,7 +57,7 @@ def runComplexStage(Map stageinfo)
 
     for (s in stageinfo['jobs']) {
 	if (running) {
-	    def result = -
+	    def result = 0
 	    stage("${s} Smoke") {
 		result = sh "echo ${provider} ${s} smoke"
 		if (result != 0 && stageinfo['fatal'] == true) {
