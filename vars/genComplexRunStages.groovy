@@ -41,9 +41,9 @@ def call(String tests, Boolean dryrun)
 		joblist += "${jobs[s]}"
 		s += 1
 	    }
-	    println(joblist)
-	    runjobs["${prov} ${s}"] = { runComplexStage(['provider': prov, 'pinfo': pinfo, 'jobs': joblist, 'tests': tests,
-							 'dryrun': dryrun]) }
+	    println("JOBLIST "+joblist)
+	    runjobs["${prov} ${s}"] = { runTestStages(['provider': prov, 'pinfo': pinfo, 'jobs': joblist, 'tests': tests,
+						       'dryrun': dryrun]) }
 	}
     }
     // Feed this into 'parallel'
@@ -51,7 +51,7 @@ def call(String tests, Boolean dryrun)
 }
 
 // This fn might be in a separate file (but in the same library)
-def runComplexStage(Map stageinfo)
+def runTestStages(Map stageinfo)
 {
     def provider = stageinfo['provider']
     def pinfo = stageinfo['pinfo']
