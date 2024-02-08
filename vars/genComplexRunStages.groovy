@@ -43,9 +43,9 @@ def call(String tests, Boolean dryrun)
 		joblist += jobs[s]
 		s += 1
 	    }
-	    last_s = s
 	    runjobs["${prov} ${last_s}-${s}"] = { runTestStages(['provider': prov, 'pinfo': pinfo, 'jobs': joblist,
 								 'tests': tests, 'dryrun': dryrun]) }
+	    last_s = s
 	}
     }
     // Feed this into 'parallel'
