@@ -67,7 +67,7 @@ pipeline {
             
             steps {
                 script {
-		    def jobs = genComplexRunStages(true)
+		    def jobs = genComplexRunStages('all', true)
 
 //		    parallel jobs
 
