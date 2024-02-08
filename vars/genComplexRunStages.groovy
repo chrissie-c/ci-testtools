@@ -32,7 +32,7 @@ def call(String tests, Boolean dryrun)
 
 	// Work out how many stages we need to run in serial to keep under the
 	// provider's instance limit
-	def jobs_per_stage = Math.round((jobs.size() / pinfo['maxjobs']) + 0.5)
+	def jobs_per_stage = Math.max(Math.round((jobs.size() / pinfo['maxjobs'])), 1)
 
 	// And divide them up...
 	def s = 0
