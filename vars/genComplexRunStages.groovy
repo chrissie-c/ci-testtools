@@ -1,21 +1,25 @@
 // Generate the jobs
-def call(Boolean do_zstream)
+def call(String tests, Boolean dryrun)
 {
     // These could be parameters to the call....
     def providers = [:]
-    providers['osp'] = ['maxjobs': 255, 'fatal': false, 'testlevel': 'all']
-    providers['aws'] = ['maxjobs': 1, 'fatal': true, 'testlevel': 'all']
-    providers['ibmvpc'] = ['maxjobs': 2, 'fatal': true, 'testlevel': 'smoke']
+    providers['osp'] = ['maxjobs': 3, 'testlevel': 'all']
+    providers['aws'] = ['maxjobs': 1, 'testlevel': 'smoke']
+    providers['ibmvpc'] = ['maxjobs': 255, 'testlevel': 'all']
 
-    def versions = ['rhel8 next-stable', 'rhel9 next-stable', 'rhel9 main']
-    def branches = ['nightly','zstream']
+    // Think about this? rexexp ???
+//    def testexcludes=[:]
+//    testexcludes['ibmvpc'] = 'watchdog'
+
+    // OS/upstream versions as pairs
+    def versions = [['8', 'next-stable'], ['9', 'next-stable'], ['9',' main']]
+    def zstream = ['no','yes']
 
     // Build a list of possible jobs
     def jobs = []
     for (v in versions) {
-	def j = v.split(' ')
-	for (b in branches) {
-	    jobs += "${j[0]} ${b} ${j[1]}"
+	for (b in zstream) {
+	    jobs += ['rhelver': v[0], 'zstream': b, 'upstream': v[1]]
 	}
     }
 
@@ -28,7 +32,6 @@ def call(Boolean do_zstream)
 	def pinfo = providers[prov]
 	def maxjobs = pinfo['maxjobs'] // max parallel
 	def jobs_per_stage = Math.round((jobs.size() / maxjobs) + 0.5)
-	println("jobs per stage for ${prov}: ${jobs_per_stage} (max concurrent = ${maxjobs})")
 
 	// Build the jobs
 	def s = 0
@@ -39,7 +42,8 @@ def call(Boolean do_zstream)
 		s += 1
 	    }
 	    println(joblist)
-	    runjobs["${prov} ${s}"] = { runComplexStage(['provider': prov, 'pinfo': pinfo, 'jobs': joblist, 'zstream': do_zstream]) }
+	    runjobs["${prov} ${s}"] = { runComplexStage(['provider': prov, 'pinfo': pinfo, 'jobs': joblist, 'tests': tests,
+							 'dryrun': dryrun]) }
 	}
     }
     // Feed this into 'parallel'
@@ -60,10 +64,11 @@ def runComplexStage(Map stageinfo)
     for (s in stageinfo['jobs']) {
 	if (true) { // running
 	    def result = 0
+	    // remember - s is also a map :)
 	    stage("${s} Smoke") {
 		result = sh "echo ${provider} ${s} smoke"
 		result = 0 // TEST
-		if (result != 0 && stageinfo['fatal'] == true) {
+		if (result != 0) {
 		    running = false
 		}
 
@@ -82,5 +87,5 @@ def runComplexStage(Map stageinfo)
     }
 }
 
-
-def jobs = call(true)
+// TEST in standalone groovy
+def jobs = call('all', true)
