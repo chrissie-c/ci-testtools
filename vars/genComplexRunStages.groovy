@@ -87,5 +87,6 @@ def runTestStages(Map stageinfo)
 }
 
 // TEST in standalone groovy
+//              tests, dryrun
 def jobs = call('all', true)
 
