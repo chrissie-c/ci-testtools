@@ -62,8 +62,8 @@ def runTestStages(Map stageinfo)
     for (s in stageinfo['jobs']) {
 	if (true) { // running
 	    def result = 0
-	    // remember - s is also a map is job params
-	    stage("${s} Smoke") {
+	    // remember - s is also a map of job params
+	    stage("rhel${s['rhelver']} ${s['zstream']} ${s['upstream']} Smoke") {
 		result = sh "echo ${provider} ${s} smoke"
 		result = 0 // TEST
 		if (result != 0) {
@@ -73,7 +73,7 @@ def runTestStages(Map stageinfo)
 	    }
 	    // If that succeeds and provider allows 'all' then run all
 	    if (result == 0 && pinfo['testlevel'] == 'all') {
-		stage("${s} All") {
+		stage("rhel${s['rhelver']} ${s['zstream']} ${s['upstream']} All") {
 		    result = sh "echo ${provider} ${s} all"
 		}
 		result = 0 // TEST
