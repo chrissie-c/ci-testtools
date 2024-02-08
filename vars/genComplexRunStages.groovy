@@ -36,14 +36,16 @@ def call(String tests, Boolean dryrun)
 
 	// And divide them up...
 	def s = 0
+	def last_s = 1
 	while (s < jobs.size()) {
 	    def joblist = []
 	    for (i=0; i < jobs_per_stage &&  s < jobs.size(); i++) {
 		joblist += jobs[s]
 		s += 1
 	    }
-	    runjobs["${prov} ${s}"] = { runTestStages(['provider': prov, 'pinfo': pinfo, 'jobs': joblist, 'tests': tests,
-						       'dryrun': dryrun]) }
+	    last_s = s
+	    runjobs["${prov} ${last_s}-${s}"] = { runTestStages(['provider': prov, 'pinfo': pinfo, 'jobs': joblist,
+								 'tests': tests, 'dryrun': dryrun]) }
 	}
     }
     // Feed this into 'parallel'
