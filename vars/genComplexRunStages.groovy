@@ -22,6 +22,7 @@ def call(String tests, Boolean dryrun)
 	    jobs += ['rhelver': v[0], 'zstream': b, 'upstream': v[1]]
 	}
     }
+    println("JOBS: "+jobs)
 
     // List of things to run on all providers
     def runjobs = [:]
@@ -33,6 +34,8 @@ def call(String tests, Boolean dryrun)
 	def maxjobs = pinfo['maxjobs'] // max parallel
 	def jobs_per_stage = Math.round((jobs.size() / maxjobs) + 0.5)
 
+	println("JOBS: "+jobs)
+
 	// Build the jobs
 	def s = 0
 	while (s < jobs.size()) {
@@ -40,6 +43,7 @@ def call(String tests, Boolean dryrun)
 	    for (i=0; i < jobs_per_stage &&  s < jobs.size(); i++) {
 		joblist += "${jobs[s]}"
 		s += 1
+		println("TEST + ${s} ${i}")
 	    }
 	    println("JOBLIST "+joblist)
 	    runjobs["${prov} ${s}"] = 'hello'
