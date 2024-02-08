@@ -1,7 +1,7 @@
 // Generate the jobs
 def call(String tests, Boolean dryrun)
 {
-    // These could be parameters to the call....
+    // Cloud providers and their limits
     def providers = [:]
     providers['osp'] = ['maxjobs': 3, 'testlevel': 'all']
     providers['aws'] = ['maxjobs': 1, 'testlevel': 'smoke']
@@ -22,24 +22,24 @@ def call(String tests, Boolean dryrun)
 	    jobs += ['rhelver': v[0], 'zstream': b, 'upstream': v[1]]
 	}
     }
-    println("JOBS: "+jobs)
 
-    // List of things to run on all providers
+    // Build the jobs, and decide what can be run in parallel and what
+    // needs to be serialised
     def runjobs = [:]
-
-    // Build the jobs list
     for (p in providers) {
 	def prov = p.key
 	def pinfo = providers[prov]
-	def maxjobs = pinfo['maxjobs'] // max parallel
-	def jobs_per_stage = Math.round((jobs.size() / maxjobs) + 0.5)
 
-	// Build the jobs
+	// Work out how many stages we need to run in serial to keep under the
+	// provider's instance limit
+	def jobs_per_stage = Math.round((jobs.size() / pinfo['maxjobs']) + 0.5)
+
+	// And divide them up...
 	def s = 0
 	while (s < jobs.size()) {
 	    def joblist = []
 	    for (i=0; i < jobs_per_stage &&  s < jobs.size(); i++) {
-		joblist += "${jobs[s]}"
+		joblist += jobs[s]
 		s += 1
 	    }
 	    runjobs["${prov} ${s}"] = { runTestStages(['provider': prov, 'pinfo': pinfo, 'jobs': joblist, 'tests': tests,
@@ -57,14 +57,12 @@ def runTestStages(Map stageinfo)
     def pinfo = stageinfo['pinfo']
     def running = true
 
-    println("rcs: provider: ${provider}")
-    println("rcs: pinfo: ${pinfo}");
     println("runComplexStage: ${stageinfo}")
 
     for (s in stageinfo['jobs']) {
 	if (true) { // running
 	    def result = 0
-	    // remember - s is also a map :)
+	    // remember - s is also a map is job params
 	    stage("${s} Smoke") {
 		result = sh "echo ${provider} ${s} smoke"
 		result = 0 // TEST
