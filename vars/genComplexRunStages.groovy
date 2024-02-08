@@ -34,8 +34,6 @@ def call(String tests, Boolean dryrun)
 	def maxjobs = pinfo['maxjobs'] // max parallel
 	def jobs_per_stage = Math.round((jobs.size() / maxjobs) + 0.5)
 
-	println("JOBS: "+jobs)
-
 	// Build the jobs
 	def s = 0
 	while (s < jobs.size()) {
@@ -43,9 +41,7 @@ def call(String tests, Boolean dryrun)
 	    for (i=0; i < jobs_per_stage &&  s < jobs.size(); i++) {
 		joblist += "${jobs[s]}"
 		s += 1
-		println("TEST + ${s} ${i}")
 	    }
-	    println("JOBLIST "+joblist)
 	    runjobs["${prov} ${s}"] = { runTestStages(['provider': prov, 'pinfo': pinfo, 'jobs': joblist, 'tests': tests,
 						       'dryrun': dryrun]) }
 	}

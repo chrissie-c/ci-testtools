@@ -69,9 +69,8 @@ pipeline {
                 script {
 		    def jobs = genComplexRunStages('all', true)
 
-//		    parallel jobs
-
-		    println(jobs)
+		    println(jobs)		    
+		    parallel jobs
                 }
             }
         }
