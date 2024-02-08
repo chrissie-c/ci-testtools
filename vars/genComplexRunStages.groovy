@@ -42,8 +42,9 @@ def call(String tests, Boolean dryrun)
 		s += 1
 	    }
 	    println("JOBLIST "+joblist)
-	    runjobs["${prov} ${s}"] = { runTestStages(['provider': prov, 'pinfo': pinfo, 'jobs': joblist, 'tests': tests,
-						       'dryrun': dryrun]) }
+	    runjobs["${prov} ${s}"] = 'hello'
+//	    runjobs["${prov} ${s}"] = { runTestStages(['provider': prov, 'pinfo': pinfo, 'jobs': joblist, 'tests': tests,
+//						       'dryrun': dryrun]) }
 	}
     }
     // Feed this into 'parallel'
