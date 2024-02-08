@@ -43,8 +43,8 @@ def call(String tests, Boolean dryrun)
 		joblist += jobs[s]
 		s += 1
 	    }
-	    runjobs["${prov} ${start_s}-${s}"] = { runTestStages(['provider': prov, 'pinfo': pinfo, 'jobs': joblist,
-								  'tests': tests, 'dryrun': dryrun]) }
+	    runjobs["${prov} ${start_s+1}-${s}"] = { runTestStages(['provider': prov, 'pinfo': pinfo, 'jobs': joblist,
+								    'tests': tests, 'dryrun': dryrun]) }
 	}
     }
     // Feed this into 'parallel'
@@ -88,3 +88,4 @@ def runTestStages(Map stageinfo)
 
 // TEST in standalone groovy
 def jobs = call('all', true)
+
