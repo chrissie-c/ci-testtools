@@ -1,10 +1,6 @@
 def project='test'
 def info=['project': project]
 
-tools {
-    jfrog 'jfrog-cli'
-}
-
 def runstuff(String agentName) {
     node("${agentName}") {
         stage("runstuff on ${agentName}") {
@@ -72,7 +68,7 @@ pipeline {
 		    sh "echo 2.0-test > .tarball-version"
 		    sh "sh autogen.sh && ./configure"
 		    sh "make rpm"
-		    jf "rt upload *.rpm conan-local/"
+		    jf 'rt upload *.rpm conan-local/'
                 }
             }
         }
