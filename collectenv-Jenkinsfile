@@ -57,10 +57,10 @@ pipeline {
         label "fedora"
     }
         
-    options {
+//    options {
 	// We do our own checkouts
 //	skipDefaultCheckout(true)
-    }
+//    }
         
     stages {
         stage('Do things') {
