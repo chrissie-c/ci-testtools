@@ -55,6 +55,9 @@ pipeline {
         label "rhel"
     }
 
+    tools {
+	jfrog 'jfrog-cli'
+    }
 //    options {
 	// We do our own checkouts
 //	skipDefaultCheckout(true)
@@ -68,7 +71,7 @@ pipeline {
 		    sh "echo 2.0-test > .tarball-version"
 		    sh "sh autogen.sh && ./configure"
 		    sh "make rpm"
-		    jf 'rt upload *.rpm conan-local/'
+		    jf 'rt upload *.rpm conan-local/libqb/'
                 }
             }
         }
