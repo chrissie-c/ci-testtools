@@ -67,6 +67,7 @@ pipeline {
             
             steps {
                 script {
+		    sh "sh autogen && ./configure"
 		    sh "make rpm"
 		    sh "jfrog upload *rpm"
                 }
