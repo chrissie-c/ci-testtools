@@ -67,8 +67,8 @@ pipeline {
 
             steps {
                 script {
+		    sh "echo 2.0-test > .tarball-version"
 		    sh "sh autogen.sh && ./configure"
-		    sh "cat libqb.spec.in | sed 's/@version@/2.0.test/' > libqb.spec.2 && mv libqb.spec.2 libqb.spec.in"
 		    sh "make rpm"
 		    sh "jfrog rt upload *.rpm"
                 }
