@@ -4,8 +4,8 @@ def call(String tests, Boolean dryrun)
     // Cloud providers and their limits
     def providers = [:]
     providers['osp'] = ['maxjobs': 3, 'testlevel': 'all']
-    providers['aws'] = ['maxjobs': 1, 'testlevel': 'smoke']
-    providers['ibmvpc'] = ['maxjobs': 255, 'testlevel': 'all']
+//    providers['aws'] = ['maxjobs': 1, 'testlevel': 'smoke']
+//    providers['ibmvpc'] = ['maxjobs': 255, 'testlevel': 'all']
 
     // Think about this? rexexp ???
 //    def testexcludes=[:]
@@ -65,21 +65,30 @@ def runTestStages(Map stageinfo)
 	    def result = 0
 	    // remember - s is also a map of job params
 	    stage("rhel${s['rhelver']} ${s['zstream']} ${s['upstream']} Smoke") {
-		result = sh "echo ${provider} ${s} tests=${stageinfo['tests']} dryrun=${stageinfo['dryrun']} smoke"
-		result = 0 // TEST
-		if (result != 0) {
+		def thisjob1 = build job: 'global/ha-functional-testing',
+		    parameters: [[$class: 'LabelParameterValue', name: 'provider', label: provider],
+				 string(name: 'dryrun', value : "${stageinfo['dryrun']}"),
+				 string(name: 'rhelver', value: "${s['rhelver']}"),
+				 string(name: 'zstream', value: "${s['zstream']}"),
+				 string(name: 'upstream', value: "${s['upstream']}"),
+				 string(name: 'tests', value: 'smoke')]
+		// CC: Not sure what to do with ${stageinfo['tests']}
+
+		if (thisjob.result != 'SUCCESS') {
 		    running = false
 		}
-
 	    }
-	    // If that succeeds and provider allows 'all' then run all
+	    // If that succeeds and provider allows 'all' then run other tests
 	    if (result == 0 && pinfo['testlevel'] == 'all') {
 		stage("rhel${s['rhelver']} ${s['zstream']} ${s['upstream']} All") {
-		    result = sh "echo ${provider} ${s} tests=${stageinfo['tests']} dryrun=${stageinfo['dryrun']} all"
-		}
-		result = 0 // TEST
-		if (result != 0) {
-		    running = false
+		def thisjob2 = build job: 'global/ha-functional-testing',
+		    parameters: [[$class: 'LabelParameterValue', name: 'provider', label: provider],
+				 string(name: 'dryrun', value : "${stageinfo['dryrun']}"),
+				 string(name: 'rhelver', value: "${s['rhelver']}"),
+				 string(name: 'zstream', value: "${s['zstream']}"),
+				 string(name: 'upstream', value: "${s['upstream']}"),
+				 string(name: 'tests', value: "${stageinfo['tests']}")]
+		    // CC: Not sure what to do with ${stageinfo['tests']}
 		}
 	    }
 	}
@@ -89,4 +98,4 @@ def runTestStages(Map stageinfo)
 // TEST in standalone groovy
 //              tests, dryrun
 def jobs = call('all', true)
-
+println(jobs)

@@ -54,12 +54,12 @@ def callThing()
 
 pipeline {
     agent {
-        label "built-in"
+        label "fedora"
     }
         
     options {
 	// We do our own checkouts
-	skipDefaultCheckout(true)
+//	skipDefaultCheckout(true)
     }
         
     stages {
@@ -67,10 +67,8 @@ pipeline {
             
             steps {
                 script {
-		    def jobs = genComplexRunStages('all', true)
-
-		    println(jobs)		    
-		    parallel jobs
+		    sh "make rpm"
+		    sh "jfrog upload *rpm"
                 }
             }
         }
