@@ -33,7 +33,7 @@ def runstuff(String agentName) {
 def collectenv(String label) {
     def nodeList = getNodes(label)
     collectBuildEnv = [:]
-    
+
     for(i=0; i<nodeList.size(); i++) {
         def agentName = nodeList[i]
 
@@ -56,20 +56,21 @@ pipeline {
     agent {
         label "fedora"
     }
-        
+
 //    options {
 	// We do our own checkouts
 //	skipDefaultCheckout(true)
 //    }
-        
+
     stages {
         stage('Do things') {
-            
+
             steps {
                 script {
 		    sh "sh autogen.sh && ./configure"
+		    sh "cat libqb.spec | sed 's/Version:/Version: 2.0.test/' > libqb.spec.2 && mv libqb.spec.2 libqb.spec"
 		    sh "make rpm"
-		    sh "jfrog upload *rpm"
+		    sh "jfrog rt upload *.rpm"
                 }
             }
         }
