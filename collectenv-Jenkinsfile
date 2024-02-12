@@ -70,7 +70,7 @@ pipeline {
 		    sh "echo 2.0-test > .tarball-version"
 		    sh "sh autogen.sh && ./configure"
 		    sh "make rpm"
-		    sh "jfrog rt upload *.rpm"
+		    sh "jfrog rt upload *.rpm conan-local/"
                 }
             }
         }
