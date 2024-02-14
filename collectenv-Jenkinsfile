@@ -72,7 +72,7 @@ pipeline {
 		    def job_name = env.JOB_NAME
 		    def lsb = Jenkins.instance.getItem(job_name).lastSuccessfulBuild.number
 		    echo "job_name = ${job_name}, lsb = ${lsb}"
-		    jf "rt s frog rt s conan-local --props \"build.name=${job_name};build.number=${lsb}\"'
+		    jf "rt s frog rt s conan-local --props \"build.name=${job_name};build.number=${lsb}\""
 		    sh "env"
 		    sh "echo 2.0-test > .tarball-version"
 		    sh "sh autogen.sh && ./configure"
