@@ -96,7 +96,7 @@ pipeline {
 		    sh "sh autogen.sh && ./configure"
 		    sh "make rpm"
 		    // upload our RPMs (automatically tagged with build info)
-		    jf 'rt upload --recursive=false *.rpm conan-local/libqb/'
+		    jf 'rt upload --flat=false --exclusions=rpmdir/* *.rpm conan-local/libqb/'
 		    // Save metadata (not needed, but maybe helpful)
 		    jf 'rt bp'
                 }
