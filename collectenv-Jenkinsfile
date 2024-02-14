@@ -26,6 +26,21 @@ def runstuff(String agentName) {
     }
 }
 
+def get_lsb()
+{
+    def lastSuccessfulBuildID = 0
+    def build = currentBuild.previousBuild
+    while (build != null) {
+        if (build.result == "SUCCESS")
+            {
+            lastSuccessfulBuildID = build.id as Integer
+            break
+        }
+        build = build.previousBuild
+    }
+    println lastSuccessfulBuildID
+}
+
 // Builds up a map with all the nodes and the functions (steps) to call.
 // Pass the returned map to 'parallel'
 def collectenv(String label) {
@@ -69,9 +84,9 @@ pipeline {
             steps {
                 script {
 		    // This is only available in a 'step'
-		    def job_name = 'libqb-remote-jenkinsfile/job/main' //env.JOB_NAME
+		    def job_name = env.JOB_NAME //'libqb-remote-jenkinsfile/job/main' //env.JOB_NAME
 		    echo "job_name = ${job_name}"
-		    def lsb = Jenkins.instance.getItem(job_name).lastSuccessfulBuild.number
+		    def lsb = get_lsb()
 		    echo "job_name = ${job_name}, lsb = ${lsb}"
 		    jf "rt s frog rt s conan-local --props \"build.name=${job_name};build.number=${lsb}\""
 		    sh "env"
