@@ -39,6 +39,7 @@ def get_lsb()
         build = build.previousBuild
     }
     println lastSuccessfulBuildID
+    return lastSuccessfulBuildID
 }
 
 // Builds up a map with all the nodes and the functions (steps) to call.
