@@ -88,12 +88,16 @@ pipeline {
 		    def job_name = env.JOB_NAME
 		    def lsb = get_lsb()
 		    echo "job_name = ${job_name}, lsb = ${lsb}"
+
+		    // Get RPMs
 		    jf "rt dl --props build.name=${job_name};build.number=${lsb} conan-local"
 		    sh "env"
 		    sh "echo 2.0-test > .tarball-version"
 		    sh "sh autogen.sh && ./configure"
 		    sh "make rpm"
+		    // upload RPMs (automatically tagged with build info)
 		    jf 'rt upload *.rpm conan-local/libqb/'
+		    jf 'bp' // No idea what this does :)
                 }
             }
         }
