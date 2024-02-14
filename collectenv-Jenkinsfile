@@ -68,8 +68,8 @@ pipeline {
 
             steps {
                 script {
-		    sh "echo ${currentJob}"
 		    sh "env"
+		    sh "echo ${build.project.name}"
 		    sh "echo 2.0-test > .tarball-version"
 		    sh "sh autogen.sh && ./configure"
 		    sh "make rpm"
