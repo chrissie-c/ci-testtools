@@ -97,7 +97,7 @@ pipeline {
 		    sh "make rpm"
 		    // upload RPMs (automatically tagged with build info)
 		    jf 'rt upload *.rpm conan-local/libqb/'
-		    jf 'bp' // No idea what this does :)
+		    jf 'rt bp' // No idea what this does :)
                 }
             }
         }
