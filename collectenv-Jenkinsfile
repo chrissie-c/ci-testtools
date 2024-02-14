@@ -70,6 +70,7 @@ pipeline {
                 script {
 		    // This is only available in a 'step'
 		    def job_name = env.JOB_NAME
+		    echo "job_name = ${job_name}"
 		    def lsb = Jenkins.instance.getItem(job_name).lastSuccessfulBuild.number
 		    echo "job_name = ${job_name}, lsb = ${lsb}"
 		    jf "rt s frog rt s conan-local --props \"build.name=${job_name};build.number=${lsb}\""
