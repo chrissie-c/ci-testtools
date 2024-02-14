@@ -26,22 +26,6 @@ def runstuff(String agentName) {
     }
 }
 
-def get_lsb()
-{
-    def lastSuccessfulBuildID = 0
-    def build = currentBuild.previousBuild
-    while (build != null) {
-        if (build.result == "SUCCESS")
-            {
-            lastSuccessfulBuildID = build.id as Integer
-            break
-        }
-        build = build.previousBuild
-    }
-    println lastSuccessfulBuildID
-    return lastSuccessfulBuildID
-}
-
 // Builds up a map with all the nodes and the functions (steps) to call.
 // Pass the returned map to 'parallel'
 def collectenv(String label) {
@@ -66,11 +50,25 @@ def callThing()
     println("not so quiet now")
 }
 
-pipeline {
-    agent {
-        label "rhel"
+// Found on t'internet
+def get_lsb()
+{
+    def lastSuccessfulBuildID = 0
+    def build = currentBuild.previousBuild
+    while (build != null) {
+        if (build.result == "SUCCESS") {
+            lastSuccessfulBuildID = build.id as Integer
+            break
+        }
+        build = build.previousBuild
     }
+    return lastSuccessfulBuildID
+}
 
+pipeline {
+    agent any
+
+    // Download jfrog
     tools {
 	jfrog 'jfrog'
     }
@@ -89,7 +87,7 @@ pipeline {
 		    def lsb = get_lsb()
 		    echo "job_name = ${job_name}, lsb = ${lsb}"
 
-		    // Get RPMs
+		    // Get last good RPMs
 		    jf "rt dl --props build.name=${job_name};build.number=${lsb} conan-local"
 		    sh "env"
 		    sh "echo 2.0-test > .tarball-version"
@@ -97,7 +95,8 @@ pipeline {
 		    sh "make rpm"
 		    // upload RPMs (automatically tagged with build info)
 		    jf 'rt upload *.rpm conan-local/libqb/'
-		    jf 'rt bp' // No idea what this does :)
+		    // Save metadata (not needed, but maybe helpful)
+		    jf 'rt bp'
                 }
             }
         }
