@@ -85,11 +85,10 @@ pipeline {
             steps {
                 script {
 		    // This is only available in a 'step'
-		    def job_name = env.JOB_NAME //'libqb-remote-jenkinsfile/job/main' //env.JOB_NAME
-		    echo "job_name = ${job_name}"
+		    def job_name = env.JOB_NAME
 		    def lsb = get_lsb()
 		    echo "job_name = ${job_name}, lsb = ${lsb}"
-		    jf "rt s conan-local --props \"build.name=${job_name};build.number=${lsb}\""
+		    jf "rt s conan-local --props \"build.name=${job_name}\" --props=\"build.number=${lsb}\""
 		    sh "env"
 		    sh "echo 2.0-test > .tarball-version"
 		    sh "sh autogen.sh && ./configure"
