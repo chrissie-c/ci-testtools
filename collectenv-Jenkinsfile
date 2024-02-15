@@ -92,14 +92,18 @@ pipeline {
 
 		    // Get last good RPMs
 		    jf "rt dl --props build.name=${job_name};build.number=${lsb} conan-local rpmdir/"
+
 		    sh "env"
 		    sh "echo 2.0-test > .tarball-version"
 		    sh "sh autogen.sh && ./configure"
 		    sh "make rpm"
+
 		    // upload our RPMs (automatically tagged with build info)
 		    jf 'rt upload --flat=false --exclusions=rpmdir/* *.rpm conan-local/libqb/'
 		    // Save metadata (not needed, but maybe helpful)
 		    jf 'rt bp'
+
+		    // These get picked up by the next job calling get_lsb()
 		    env.CCTEST="this is a test"
 		    env.CCANOTHER="Keep hoping"
                 }
