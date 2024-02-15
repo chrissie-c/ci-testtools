@@ -62,6 +62,7 @@ def get_lsb()
         }
         build = build.previousBuild
     }
+    println("CC: "+build.buildVariables)
     return lastSuccessfulBuildID
 }
 
