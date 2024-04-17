@@ -13,12 +13,11 @@ def call(String jobname, ArrayList params, Map info)
     println(a.getAbsoluteUrl())
     println(a.getFullProjectName())
     println(a.getFullDisplayName())
+    println(a.externalizableId)
 
-    def n = a.getFullDisplayName()
-    
     info['joblist'] += a
 
-    waitForBuild a.getId()
+    waitForBuild a.externalizableId
 
     info['joblist'] -= a
 
