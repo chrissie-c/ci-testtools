@@ -11,7 +11,9 @@ def call(String jobname, ArrayList params, Map info)
     // Save it
     info['joblist'] += a
     //    waitForBuild a.externalizableId
-    a.doKill()
+    // test killing it
+    def j = Jenkins.instance.getByFullName(a.externalizableId)
+    j.doKill()
 
     // If it finishes OK then we can remove it
     info['joblist'] -= a
