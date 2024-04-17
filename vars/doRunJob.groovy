@@ -8,17 +8,12 @@ def call(String jobname, ArrayList params, Map info)
 		  waitForStart: true,
 		  wait: false
 
-    println(a)
-    println(a.getId())
-    println(a.getAbsoluteUrl())
-    println(a.getFullProjectName())
-    println(a.getFullDisplayName())
-    println(a.externalizableId)
-
+    // Save it
     info['joblist'] += a
+    //    waitForBuild a.externalizableId
+    a.doKill()
 
-    waitForBuild a.externalizableId
-
+    // If it finishes OK then we can remove it
     info['joblist'] -= a
 
     return a
