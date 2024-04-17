@@ -9,7 +9,7 @@ def call(String jobname, ArrayList params, Map info)
 		  wait: false
 
     // Save it
-    jobId = "${a.getFullProjectName()} #${a.getId()}"
+    String jobId = "${a.getFullProjectName()} #${a.getId()}"
     info['joblist'] += jobId
 
     Jenkins.instance.getItemByFullName(a.getFullProjectName()).each {
