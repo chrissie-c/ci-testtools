@@ -8,30 +8,28 @@ def call(String jobname, ArrayList params, Map info)
 		  waitForStart: true,
 		  wait: false
 
-
-    println(a)
-    println(a.getId())
-    println(a.getFullProjectName())
-    println(a.externalizableId)
+    // Save it
+    jobId = "${a.getFullProjectName()} #${a.getId()}") {
+    info['joblist'] += jobId
 
     Jenkins.instance.getItemByFullName(a.getFullProjectName()).each {
 	for (b in it.getBuilds()) {
 	    if (b.isInProgress()) {
 		def String name = b
-		println("job: "+b)
-		if (name == "${a.getFullProjectName()} #${a.getId()}") {
-		    b.doStop()
+		if (info['joblist'].contains(name)) {
+		    println("Stopping job: "+b)
+		    if (name == "${a.getFullProjectName()} #${a.getId()}") {
+			b.doStop()
+		    }
 		}
 	    }
 	}
     }
 
-    // Save it
-    info['joblist'] += a
-    //    waitForBuild a.externalizableId
+    waitForBuild a.externalizableId
 
     // If it finishes OK then we can remove it
-    info['joblist'] -= a
+    info['joblist'] -= jobId
 
     return a
 }
