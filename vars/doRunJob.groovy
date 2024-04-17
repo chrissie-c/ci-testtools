@@ -10,9 +10,10 @@ def call(String jobname, ArrayList params, Map info)
 
     println(a)
     println(a.getId())
+    println(a.getAbsoluteUrl())
     println(a.getFullProjectName())
 
-    def n = a.getFullProjectName() + '#' + a.getId()
+    def n = a.getAbsoluteUrl()
     
     info['joblist'] += a
 
