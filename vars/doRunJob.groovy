@@ -18,7 +18,8 @@ def call(String jobname, ArrayList params, Map info)
     info['joblist'] += a
     //    waitForBuild a.externalizableId
     // test killing it
-    def j = Jenkins.instance.getItemByFullName(a.getFullprojectName())
+    def j = Jenkins.instance.getItemByFullName(a.getFullProjectName())
+    println(j)
     j.doKill()
 
     // If it finishes OK then we can remove it
