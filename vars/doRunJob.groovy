@@ -14,6 +14,10 @@ def call(String jobname, ArrayList params, Map info)
     println(a.getFullProjectName())
     println(a.externalizableId)
 
+    Jenkins.instance.getAllItems(Job).each {
+	println(it)
+    }
+    
     // Save it
     info['joblist'] += a
     //    waitForBuild a.externalizableId
