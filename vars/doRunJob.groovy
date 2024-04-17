@@ -9,10 +9,14 @@ def call(String jobname, ArrayList params, Map info)
 		  wait: false
 
     println(a)
+    println(a.getId())
+    println(a.getFullProjectName())
 
+    def n = a.getFullProjectName()) + '#' a.getId())
+    
     info['joblist'] += a
 
-    a.wait()
+    waitForBuild a.getId()
 
     info['joblist'] -= a
 
