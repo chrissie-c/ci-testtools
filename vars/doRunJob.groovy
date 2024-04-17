@@ -15,7 +15,9 @@ def call(String jobname, ArrayList params, Map info)
     println(a.externalizableId)
 
     Jenkins.instance.getItemByFullName(a.getFullProjectName()).each {
-	println(it)
+	for b in it.getBuilds() {
+	    println(it)
+	}
     }
 
     // Save it
