@@ -16,7 +16,10 @@ def call(String jobname, ArrayList params, Map info)
 
     Jenkins.instance.getItemByFullName(a.getFullProjectName()).each {
 	for (b in it.getBuilds()) {
-	    println(it)
+	    if (b.isInProgress()) {
+		def String name = b
+		println("job: "+b)
+	    }
 	}
     }
 
