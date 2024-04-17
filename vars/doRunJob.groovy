@@ -4,7 +4,7 @@ def call(String jobname, ArrayList params, Map info)
 {
     def a = build job: jobname,
 	parameters: params,
-	propogate: false,
+	propagate: false,
 	wait: false
 
     info['joblist'] += a
