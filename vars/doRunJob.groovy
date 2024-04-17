@@ -1,6 +1,6 @@
 // doRunJob.groovy
 
-def call(String jobname, Map params, Map info)
+def call(String jobname, ArrayList params, Map info)
 {
     def a = build job: jobname,
 	parameters: params,
