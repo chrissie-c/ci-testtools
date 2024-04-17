@@ -19,7 +19,7 @@ def call(String jobname, ArrayList params, Map info)
 	    if (b.isInProgress()) {
 		def String name = b
 		println("job: "+b)
-		if (name == "${a.getFullProjectName()}#${a.getId()}") {
+		if (name == "${a.getFullProjectName()} #${a.getId()}") {
 		    b.doKill()
 		}
 	    }
