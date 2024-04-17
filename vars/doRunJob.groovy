@@ -7,6 +7,8 @@ def call(String jobname, ArrayList params, Map info)
 	propagate: false,
 	wait: false
 
+    println(a)
+    println(a.getNumber())
     info['joblist'] += a
 
     a.waitForBuild()
