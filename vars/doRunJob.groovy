@@ -16,6 +16,7 @@ def call(String jobname, ArrayList params, Map info)
 	for (b in it.getBuilds()) {
 	    if (b.isInProgress()) {
 		def String name = b
+		println("name = ${name}, list = ${info['joblist']}")
 		if (info['joblist'].contains(name)) {
 		    println("Stopping job: "+b)
 		    if (name == "${a.getFullProjectName()} #${a.getId()}") {
