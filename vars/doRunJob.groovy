@@ -19,6 +19,9 @@ def call(String jobname, ArrayList params, Map info)
 	    if (b.isInProgress()) {
 		def String name = b
 		println("job: "+b)
+		if (name == "${a.getFullProjectName()}#${a.getId()}") {
+		    b.doKill()
+		}
 	    }
 	}
     }
@@ -26,12 +29,6 @@ def call(String jobname, ArrayList params, Map info)
     // Save it
     info['joblist'] += a
     //    waitForBuild a.externalizableId
-    // test killing it
-    def n = a.getFullProjectName() +"/" + a.getId()
-    println(n)
-    def j = Jenkins.instance.getItemByFullName(n)
-    println(j)
-    j.doKill()
 
     // If it finishes OK then we can remove it
     info['joblist'] -= a
