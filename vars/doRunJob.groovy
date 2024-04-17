@@ -12,7 +12,7 @@ def call(String jobname, ArrayList params, Map info)
 
     info['joblist'] += a
 
-    waitForBuild a.envVars.JOB_NAME
+    waitForBuild a.getDisplayName()
 
     info['joblist'] -= a
 
