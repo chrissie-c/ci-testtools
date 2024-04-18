@@ -1,7 +1,7 @@
 def call()
 {
     try {
-        timeout(time: 60, unit: 'MINUTES') {
+        timeout(time: 60, unit: 'SECONDS') {
             sh "sleep 120"
         }
     } catch (err) {
