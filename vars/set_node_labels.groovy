@@ -1,4 +1,4 @@
-def call(String node_regexp, String cmd, String label)
+def call(String node_regex, String cmd, String label)
 {
     for (n in jenkins.model.Jenkins.instance.nodes) {
 	if (n.name.matches(node_regex)) {
