@@ -22,7 +22,7 @@ def call(String node_regexp, String cmd, String label)
 		labels_str += " ${i}"
 	    }
 	    println("CC: node ${n.name} = ${labels_str}")
-//	    node_handle.setLabelString(labels_str)
+	    node_handle.setLabelString(labels_str)
 	}
     }
 	
