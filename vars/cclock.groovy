@@ -1,3 +1,5 @@
+import com.redhat.clusterci.jnaflock
+
 def call(String name)
 {
     def a = new jnaflock('tmp/test.lock')
