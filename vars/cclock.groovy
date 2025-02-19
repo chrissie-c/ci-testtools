@@ -32,7 +32,7 @@ def call(String lockname, String mode, Closure thingtorun)
     
     def fd = jnaflock.CLibrary.INSTANCE.creat("/tmp/${lockname}", 0666)
     println("FD for test.lock is " + fd)
-    jnaflock.CLibrary.INSTANCE.flock(fd, 1) // LOCK_SH
+    jnaflock.CLibrary.INSTANCE.flock(fd, lockmode)
     thingtorun()
     jnaflock.CLibrary.INSTANCE.close(fd)
     println("Closed")
