@@ -1,3 +1,9 @@
+// Just to see if this works
+import com.sun.jna.Library;
+import com.sun.jna.Native;
+import com.sun.jna.Platform;
+
+
 import com.redhat.clusterci.jnaflock
 
 def call(String name)
