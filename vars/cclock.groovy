@@ -8,7 +8,7 @@ class jnaflock {
 	CLibrary INSTANCE = (CLibrary)	Native.load("c", CLibrary.class);
 	
 	void printf(String format, Object... args);
-	int open(String file, Integer mode);
+	int open(String file, int mode);
 	int creat(String file, int mode);
 	int flock(int fd, int mode);
 	int close(int fd);
@@ -18,22 +18,25 @@ class jnaflock {
 
 def call(String lockname, String mode, Closure thingtorun)
 {
-    def lockmode = 0;
-    if (mode == 'READ') {
-	lockmode = 1; // LOCK_SH
+    // This MUST run on the Jenkins host
+    node('built-in') {
+	def lockmode = 0;
+	if (mode == 'READ') {
+	    lockmode = 1; // LOCK_SH
+	}
+	if (mode == 'WRITE') {
+	    lockmode = 2; // LOCK_EX
+	}
+	if (lockmode == 0) {
+	    println("jnaflock: Unknown lock mode ${mode}")
+	    return -1
+	}
+	
+	def fd = jnaflock.CLibrary.INSTANCE.creat("/tmp/${lockname}", 0666)
+	println("FD for test.lock is " + fd)
+	jnaflock.CLibrary.INSTANCE.flock(fd, lockmode)
+	thingtorun()
+	jnaflock.CLibrary.INSTANCE.close(fd)
+	println("Closed")
     }
-    if (mode == 'WRITE') {
-	lockmode = 2; // LOCK_EX
-    }
-    if (lockmode == 0) {
-	println("Unknown lock mode ${mode}")
-	return -1
-    }
-    
-    def fd = jnaflock.CLibrary.INSTANCE.creat("/tmp/${lockname}", 0666)
-    println("FD for test.lock is " + fd)
-    jnaflock.CLibrary.INSTANCE.flock(fd, lockmode)
-    thingtorun()
-    jnaflock.CLibrary.INSTANCE.close(fd)
-    println("Closed")
 }
