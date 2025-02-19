@@ -4,7 +4,6 @@ import com.sun.jna.Native;
 import com.sun.jna.Platform;
 
 class jnaflock {
-    public:
     interface CLibrary extends Library {
 	CLibrary INSTANCE = (CLibrary)	Native.load("c", CLibrary.class);
 	
