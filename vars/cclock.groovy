@@ -32,7 +32,7 @@ def do_unlock(Map info)
 
 def call(Map info, String lockname, String mode, Closure thingtorun)
 {
-    if (info['lockfd'] != -1) {
+    if (info.containsKey('lockfd') && info['lockfd'] >= 0) {
 	throw(new Exception("Request for lock ${lockname}, while lock on fd ${info['lockfd']} already held (only 1 lock allowed at a time)"))
 	return -1
     }
