@@ -3,6 +3,11 @@ import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Platform;
 
+def LOCK_EX = 2
+def LOCK_SH = 1
+def LOCK_UNLOCK = 8
+
+
 class jnaflock {
     // com.sun.jna.Library need to be named explicity for some reason.
     interface CLibrary extends com.sun.jna.Library {
@@ -39,10 +44,10 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
     def lockmode = 0
 
     if (mode == 'READ') {
-	lockmode = 1 // LOCK_SH
+	lockmode = LOCK_SH
     }
     if (mode == 'WRITE') {
-	lockmode = 2 // LOCK_EX
+	lockmode = LOCK_EX
     }
     if (mode == 'UNLOCK') {
 	return do_unlock(info)
