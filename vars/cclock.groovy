@@ -18,30 +18,26 @@ class jnaflock {
 // is already running on 'built-in'.
 def do_unlock(Map info)
 {
-    println("do_unlock: info map: ${info}")
-
     if (info.containsKey('lockfd') && info['lockfd'] >= 0) {
 	if (jnaflock.CLibrary.INSTANCE.flock(info['lockfd'], 8) == -1) { // 8 = LOCK_UNLOCK
-	    println("do_unlock failed on fd ${info['lockfd']}")
-	    return
+	    println("RWLock: unlock failed on fd ${info['lockfd']}")
+	    // Don't return here, still try to close the file
 	}
-	jnaflock.CLibrary.INSTANCE.close(info['lockfd'])
-	println("Lock on fd ${info['lockfd']} released")
+	if (jnaflock.CLibrary.INSTANCE.close(info['lockfd']) == 0) {
+	    println("RWLock on fd ${info['lockfd']} released")
+	} else {
+	    println("RWLock: close failed on fd ${info['lockfd']}")
+	    return -1
+	}
     }
+    return 0
 }
 
 def call(Map info, String lockname, String mode, Closure thingtorun)
 {
-    if (info.containsKey('lockfd') && info['lockfd'] >= 0) {
-	throw(new Exception("Request for lock ${lockname}, while lock on fd ${info['lockfd']} already held (only 1 lock allowed at a time)"))
-	return -1
-    }
-
-    def lockdir = "${JENKINS_HOME}/locks"
-
-    sh "mkdir -p ${lockdir}"
-
+    def lockdir = "${JENKINS_HOME}/locks"    
     def lockmode = 0
+
     if (mode == 'READ') {
 	lockmode = 1 // LOCK_SH
     }
@@ -49,34 +45,40 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 	lockmode = 2 // LOCK_EX
     }
     if (mode == 'UNLOCK') {
-	do_unlock(info)
-	return -1 // Doesn't actually 'return' - more like a 'break' ???!!
+	return do_unlock(info)
     }
     if (lockmode == 0) {
-//	throw(new Exception("jnaflock: Unknown lock mode ${mode}"))
+	throw(new Exception("RWLock: Unknown lock mode ${mode}"))
+	return -1
+    }
+
+    // Of course, this needs to be after the UNLOCK check
+    if (info.containsKey('lockfd') && info['lockfd'] >= 0) {
+	throw(new Exception("RWLock: Request for lock ${lockname}, while lock on fd ${info['lockfd']} already held (only 1 lock allowed at a time)"))
 	return -1
     }
     
-    // This MUST run on the Jenkins host
+    // This MUST run on the Jenkins host, that's where the flocks are
     node('built-in') {
-	info['lockfd'] = jnaflock.CLibrary.INSTANCE.creat("${lockdir}/${lockname}.lock", 0666)
-	if (info['lockfd'] == -1) {
-	    throw(new Exception("Failed to 'creat' file for lock ${lockdir}/${lockname}"))
+	sh "mkdir -p ${lockdir}"
+
+	def lockfd = info['lockfd'] = jnaflock.CLibrary.INSTANCE.creat("${lockdir}/${lockname}.lock", 0666)
+	if (lockfd == -1) {
+ 	    throw(new Exception("RWLock: Failed to 'creat' file for lock ${lockdir}/${lockname}"))
 	    return -1
 	}
-	println("FD for lock ${lockname} is " + info['lockfd'])
-	jnaflock.CLibrary.INSTANCE.flock(info['lockfd'], lockmode)
+	println("FD for lock ${lockname} is ${lockfd}")
+	if (jnaflock.CLibrary.INSTANCE.flock(lockfd, lockmode) == -1) {
+ 	    throw(new Exception("RWLock: Failed to 'flock' file for lock ${lockdir}/${lockname} at ${lockmode}"))
+	    return -1	    
+	}
+	info['lockfd'] = lockfd
+	info['lockname'] = lockname // Save it in case of errors later
     }
 
-    println("After first node() block")
-    
     thingtorun()
-    
-    node('built-in') {
-	println("in second node() block")
-	jnaflock.CLibrary.INSTANCE.close(info['lockfd'])
-	println("Lock ${lockname} released")
-	info['lockfd'] = -1
-    }
+
+    do_unlock(info)
+
     return 0
 }
