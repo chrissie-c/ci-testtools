@@ -23,7 +23,8 @@ def add_us(String lockfile, String lockmode, String taskid, String[] current_con
 // THIS is the new File-based locking
 def call(Map info, String lockname, String mode, Closure thingtorun)
 {
-    def lockfile = "${JENKINS_HOME}/locks/F-${lockname}.locks"
+    def lockdir = "${JENKINS_HOME}/locks/"
+    def lockfile = "F-${lockname}.locks"
     def taskid = env.BUILD_URL
     def waiting = true
 
