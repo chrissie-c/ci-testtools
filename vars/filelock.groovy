@@ -5,7 +5,7 @@ import java.io.File;
 def write_file(String lockfile, String[] contents)
 {
     def outfile = new FileWriter(lockfile, false)
-    for (s in current_contents) {
+    for (s in contents) {
 	outfile.write(s+'\n')
     }
     outfile.flush()
@@ -27,7 +27,7 @@ def add_us(String lockfile, String lockmode, String taskid, String[] current_con
 }
 
 
-// Caeed in post{always{}} to clear all locks for this job
+// Called in post{always{}} to clear all locks for this job
 def unlock_all(String lockname, String lockfile, String taskid)
 {
     lock(lockname) {
