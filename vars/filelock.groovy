@@ -32,8 +32,8 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
     while (waiting) {
 	lock(lockname) {
 	    // Read the existing file - DO THIS ON built-in
+	    def String[] lockcontents = []	    
 	    node('built-in') {
-		def String[] lockcontents = []
 		try {
 		    lockcontents = new File(lockfile as String) as String[]
 		} catch (err) {
