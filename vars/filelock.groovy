@@ -22,7 +22,7 @@ def add_us(String lockfile, String lockmode, String taskid, String[] current_con
 
     // Write it back
     node('built-in') {
-	write_filel(ockfile, current_contents)
+	write_file(lockfile, current_contents)
     }
 }
 
@@ -113,7 +113,7 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 
 	// Write it back
 	node('built-in') {
-	    write_file(llockfile, newlockcontents);
+	    write_file(lockfile, newlockcontents);
     }
 }
 
