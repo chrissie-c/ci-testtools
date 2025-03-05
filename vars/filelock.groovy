@@ -43,6 +43,7 @@ def unlock_all(String lockname, String lockfile, String taskid)
 
 	    // Write it back
 	    write_file(lockfile, current_contents)
+	}
     }
 }
 
@@ -86,10 +87,11 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 			if (shortmode == 'W') {
 			    wait_time = 1
 			    println("${lockname} write locked - sleeping to wait for read lock");
-			} else {
+			    } else {
 			    // Must be all READ locks in the file, we are good to go
-			    add_us(lockfile, mode, taskid, lockcontents)
-			    waiting = false
+				add_us(lockfile, mode, taskid, lockcontents)
+				waiting = false
+			    }
 			}
 		    }
 		}
@@ -102,8 +104,8 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 
     // Unlock it
     // Re-Read the existing file to get ay READer updates
-    lock(lockname) {
-	def lockcontents = new File(lockfile) as String[]
+	lock(lockname) {
+	    def lockcontents = new File(lockfile) as String[]
 	def our_line = [ mode.substring(0,1)+taskid ]
 
 	// Remove us from the list
@@ -112,6 +114,6 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 	// Write it back
 	node('built-in') {
 	    write_file(llockfile, newlockcontents);
-	}
     }
 }
+
