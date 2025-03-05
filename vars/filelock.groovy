@@ -27,9 +27,11 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
     def lockfile = "${lockdir}/F-${lockname}.locks"
     def taskid = env.BUILD_URL
     def waiting = true
+    def wait_time = 0
 
     // Jenkins-lock the lock-file!
     while (waiting) {
+	wait(wait_time)
 	lock(lockname) {
 	    // Read the existing file - DO THIS ON built-in
 	    def String[] lockcontents = []	    
@@ -48,7 +50,7 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 		waiting = false
 	    } else {
 		if (mode == 'WRITE') { // we need to wait as something is using it
-		    sleep(1000)
+		    wait_time = 1
 		    println("${lockname} write locked - sleeping to wait for lock");
 		    continue
 		}
@@ -58,7 +60,7 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 		    def shortmode = s.substring(0,1)
 		    def jobname = s.substring(1, s.length())
 		    if (shortmode == 'W') {
-			sleep(1000)
+			wait_time = 1
 			println("${lockname} write locked - sleeping to wait for read lock");
 			continue
 		    }
