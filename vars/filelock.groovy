@@ -12,6 +12,7 @@ def write_lockfile(String lockfile, String[] contents)
     outfile.close()
 }
 
+// Assumes we are on node built-in
 def add_us(String lockfile, String lockmode, String taskid, String[] current_contents)
 {
     def our_line = lockmode.substring(0,1)+taskid
@@ -59,9 +60,9 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 	sleep(wait_time)
 	lock(lockname) {
 	    // Read the existing file - DO THIS ON built-in
-	    def String[] lockcontents = []	    
+	    def String[] lockcontents = []
 	    node('built-in') {
-		sh "mkdir -p ${lockdir}"		
+		sh "mkdir -p ${lockdir}"
 		try {
 		    lockcontents = new File(lockfile as String) as String[]
 		} catch (err) {
@@ -114,4 +115,3 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 	    write_lockfile(lockfile, newlockcontents)
     }
 }
-
