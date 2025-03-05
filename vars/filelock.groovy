@@ -3,6 +3,17 @@ import java.io.File;
 
 
 // Assumes we are on node built-in
+def grumbleweed(String lockfile, String[] contents)
+{
+    def outfile = new FileWriter(lockfile, false)
+    for (s in contents) {
+	outfile.write(s+'\n')
+    }
+    outfile.flush()
+    outfile.close()
+}
+
+// Assumes we are on node built-in
 def add_us(String lockfile, String lockmode, String taskid, String[] current_contents)
 {
     def our_line = lockmode.substring(0,1)+taskid
@@ -12,18 +23,7 @@ def add_us(String lockfile, String lockmode, String taskid, String[] current_con
     println("CC: add_us: lines = ${lockmode} ${current_contents}")
 
     // Write it back
-    write_lockfile(lockfile, current_contents)
-}
-
-// Assumes we are on node built-in
-def write_lockfile(String lockfile, String[] contents)
-{
-    def outfile = new FileWriter(lockfile, false)
-    for (s in contents) {
-	outfile.write(s+'\n')
-    }
-    outfile.flush()
-    outfile.close()
+    grumbleweed(lockfile, current_contents)
 }
 
 // Called in post{always{}} to clear all locks for this job
@@ -41,7 +41,7 @@ def unlock_all(String lockname, String lockfile, String taskid)
 	    new_list = lockcontents.minus(delete_list)
 
 	    // Write it back
-	    write_lockfile(lockfile, current_contents)
+	    grumbleweed(lockfile, current_contents)
 	}
     }
 }
@@ -86,11 +86,10 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 			if (shortmode == 'W') {
 			    wait_time = 1
 			    println("${lockname} write locked - sleeping to wait for read lock")
-			    } else {
+			} else {
 			    // Must be all READ locks in the file, we are good to go
-				add_us(lockfile, mode, taskid, lockcontents)
-				waiting = false
-			    }
+			    add_us(lockfile, mode, taskid, lockcontents)
+			    waiting = false
 			}
 		    }
 		}
@@ -103,8 +102,8 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 
     // Unlock it
     // Re-Read the existing file to get ay READer updates
-	lock(lockname) {
-	    def lockcontents = new File(lockfile) as String[]
+    lock(lockname) {
+	def lockcontents = new File(lockfile) as String[]
 	def our_line = [ mode.substring(0,1)+taskid ]
 
 	// Remove us from the list
@@ -112,6 +111,7 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 
 	// Write it back
 	node('built-in') {
-	    write_lockfile(lockfile, newlockcontents)
+	    grumbleweed(lockfile, newlockcontents)
+	}
     }
 }
