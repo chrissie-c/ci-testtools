@@ -2,7 +2,7 @@ import java.io.File;
 
 
 // Assumes we are on node built-in
-def write_file(String lockfile, String[] contents)
+def write_lockfile(String lockfile, String[] contents)
 {
     def outfile = new FileWriter(lockfile, false)
     for (s in contents) {
@@ -22,7 +22,7 @@ def add_us(String lockfile, String lockmode, String taskid, String[] current_con
 
     // Write it back
     node('built-in') {
-	write_file(lockfile, current_contents)
+	write_lockfile(lockfile, current_contents)
     }
 }
 
@@ -42,7 +42,7 @@ def unlock_all(String lockname, String lockfile, String taskid)
 	    new_list = lockcontents.minus(delete_list)
 
 	    // Write it back
-	    write_file(lockfile, current_contents)
+	    write_lockfile(lockfile, current_contents)
 	}
     }
 }
@@ -78,7 +78,7 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 	    } else {
 		if (mode == 'WRITE') { // we need to wait as something is using it
 		    wait_time = 1
-		    println("${lockname} write locked - sleeping to wait for lock");
+		    println("${lockname} write locked - sleeping to wait for lock")
 		} else {
 	            for (s in lockcontents) {
 			println("CC: Seeing if we can allow read lock")
@@ -86,7 +86,7 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 			def jobname = s.substring(1, s.length())
 			if (shortmode == 'W') {
 			    wait_time = 1
-			    println("${lockname} write locked - sleeping to wait for read lock");
+			    println("${lockname} write locked - sleeping to wait for read lock")
 			    } else {
 			    // Must be all READ locks in the file, we are good to go
 				add_us(lockfile, mode, taskid, lockcontents)
@@ -113,7 +113,7 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 
 	// Write it back
 	node('built-in') {
-	    write_file(lockfile, newlockcontents);
+	    write_lockfile(lockfile, newlockcontents)
     }
 }
 
