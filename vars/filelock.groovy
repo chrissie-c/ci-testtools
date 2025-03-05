@@ -31,7 +31,7 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 
     // Jenkins-lock the lock-file!
     while (waiting) {
-	wait(wait_time)
+	sleep(wait_time)
 	lock(lockname) {
 	    // Read the existing file - DO THIS ON built-in
 	    def String[] lockcontents = []	    
