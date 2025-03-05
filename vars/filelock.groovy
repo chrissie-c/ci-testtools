@@ -24,7 +24,7 @@ def add_us(String lockfile, String lockmode, String taskid, String[] current_con
 def call(Map info, String lockname, String mode, Closure thingtorun)
 {
     def lockdir = "${JENKINS_HOME}/locks/"
-    def lockfile = "F-${lockname}.locks"
+    def lockfile = "${lockdir}/F-${lockname}.locks"
     def taskid = env.BUILD_URL
     def waiting = true
 
