@@ -21,9 +21,7 @@ def add_us(String lockfile, String lockmode, String taskid, String[] current_con
     println("CC: add_us: lines = ${lockmode} ${current_contents}")
 
     // Write it back
-    node('built-in') {
-	write_lockfile(lockfile, current_contents)
-    }
+    write_lockfile(lockfile, current_contents)
 }
 
 
