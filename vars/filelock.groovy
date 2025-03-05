@@ -1,16 +1,6 @@
 import java.io.File;
 
 
-// Assumes we are on node built-in
-def write_lockfile(String lockfile, String[] contents)
-{
-    def outfile = new FileWriter(lockfile, false)
-    for (s in contents) {
-	outfile.write(s+'\n')
-    }
-    outfile.flush()
-    outfile.close()
-}
 
 // Assumes we are on node built-in
 def add_us(String lockfile, String lockmode, String taskid, String[] current_contents)
@@ -25,6 +15,16 @@ def add_us(String lockfile, String lockmode, String taskid, String[] current_con
     write_lockfile(lockfile, current_contents)
 }
 
+// Assumes we are on node built-in
+def write_lockfile(String lockfile, String[] contents)
+{
+    def outfile = new FileWriter(lockfile, false)
+    for (s in contents) {
+	outfile.write(s+'\n')
+    }
+    outfile.flush()
+    outfile.close()
+}
 
 // Called in post{always{}} to clear all locks for this job
 def unlock_all(String lockname, String lockfile, String taskid)
