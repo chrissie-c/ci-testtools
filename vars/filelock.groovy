@@ -52,21 +52,20 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 		if (mode == 'WRITE') { // we need to wait as something is using it
 		    wait_time = 1
 		    println("${lockname} write locked - sleeping to wait for lock");
-		    continue
-		}
-
-	        for (s in lockcontents) {
-		    println("CC: Seeing if we can allow read lock")
-		    def shortmode = s.substring(0,1)
-		    def jobname = s.substring(1, s.length())
-		    if (shortmode == 'W') {
-			wait_time = 1
-			println("${lockname} write locked - sleeping to wait for read lock");
-			continue
+		} else {
+	            for (s in lockcontents) {
+			println("CC: Seeing if we can allow read lock")
+			def shortmode = s.substring(0,1)
+			def jobname = s.substring(1, s.length())
+			if (shortmode == 'W') {
+			    wait_time = 1
+			    println("${lockname} write locked - sleeping to wait for read lock");
+			} else {
+			    // Must be all READ locks in the file, we are good to go
+			    add_us(lockfile, mode, taskid, lockcontents)
+			    waiting = false
+			}
 		    }
-		    // Must be all READ locks in the file, we are good to go
-		    add_us(lockfile, mode, taskid, lockcontents)
-		    waiting = false
 		}
 	    }
 	}
