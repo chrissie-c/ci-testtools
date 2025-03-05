@@ -1,5 +1,17 @@
 import java.io.File;
 
+
+// Assumes we are on node built-in
+def write_file(String lockfile, String[] contents)
+{
+    def outfile = new FileWriter(lockfile, false)
+    for (s in current_contents) {
+	outfile.write(s+'\n')
+    }
+    outfile.flush()
+    outfile.close()
+}
+
 def add_us(String lockfile, String lockmode, String taskid, String[] current_contents)
 {
     def our_line = lockmode.substring(0,1)+taskid
@@ -10,15 +22,29 @@ def add_us(String lockfile, String lockmode, String taskid, String[] current_con
 
     // Write it back
     node('built-in') {
-	def outfile = new FileWriter(lockfile, false)
-	for (s in current_contents) {
-	    outfile.write(s+'\n')
-	}
-	outfile.flush()
-	outfile.close()
+	write_filel(ockfile, current_contents)
     }
 }
 
+
+// Caeed in post{always{}} to clear all locks for this job
+def unlock_all(String lockname, String lockfile, String taskid)
+{
+    lock(lockname) {
+	node('built-in') {
+
+	    def delete_list = []
+	    def lockcontents = new File(lockfile as String) as String[]
+	    for (s in lockcontents) {
+		if (s.substring(1, s.len()) == taskid)
+		    delete_list += s
+	    }
+	    new_list = lockcontents.minus(delete_list)
+
+	    // Write it back
+	    write_file(lockfile, current_contents)
+    }
+}
 
 // THIS is the new File-based locking
 def call(Map info, String lockname, String mode, Closure thingtorun)
@@ -70,6 +96,8 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 	    }
 	}
     }
+
+    // Run the thing
     thingtorun()
 
     // Unlock it
@@ -83,12 +111,7 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 
 	// Write it back
 	node('built-in') {
-	    outfile = new FileWriter(lockfile, false)
-	    for (s in newlockcontents) {
-		outfile.write(s)
-	    }
-	    outfile.flush()
-	    outfile.close()
+	    write_file(llockfile, newlockcontents);
 	}
     }
 }
