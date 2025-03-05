@@ -21,7 +21,7 @@ def add_us(String lockfile, String lockmode, String taskid, String[] current_con
 
 
 // THIS is the new File-based locking
-def RWlock_lock(Map info, String lockname, String mode, Closure thingtorun)
+def call(Map info, String lockname, String mode, Closure thingtorun)
 {
     def JENKINS_HOME='$JENKINS_HOME/tmp'
     def lockfile = "${JENKINS_HOME}/locks/F-${lockname}.locks"
