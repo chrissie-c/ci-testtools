@@ -23,7 +23,6 @@ def add_us(String lockfile, String lockmode, String taskid, String[] current_con
 // THIS is the new File-based locking
 def call(Map info, String lockname, String mode, Closure thingtorun)
 {
-    def JENKINS_HOME='$JENKINS_HOME/tmp'
     def lockfile = "${JENKINS_HOME}/locks/F-${lockname}.locks"
     def taskid = env.BUILD_URL
     def waiting = true
@@ -34,6 +33,7 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 	    // Read the existing file - DO THIS ON built-in
 	    def String[] lockcontents = []	    
 	    node('built-in') {
+		sh "mkdir -p ${lockdir}"		
 		try {
 		    lockcontents = new File(lockfile as String) as String[]
 		} catch (err) {
