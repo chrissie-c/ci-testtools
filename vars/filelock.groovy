@@ -35,12 +35,12 @@ def unlock_ours(String lockname, String lockfile, String taskid)
 	node('built-in') {
 
 	    def delete_list = []
-	    def lockcontents = read_lockfile(lockfile)
+	    def ArrayList lockcontents = read_lockfile(lockfile)
 	    for (s in lockcontents) {
 		if (s.substring(1) == taskid)
 		    delete_list += s
 	    }
-	    def new_list = lockcontents.minus(delete_list)
+	    def ArrayList new_list = lockcontents.minus(delete_list)
 
 	    // Write it back
 	    write_lockfile(lockfile, new_list)
@@ -108,25 +108,25 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 		} catch (java.io.FileNotFoundException err) {
 		    // Not found = no locks. Throw all other errors back up
 		}
-	    }
-	    if (lockcontents.size() == 0) { // No locks held, we are right in
-		add_us(lockfile, mode, taskid, lockcontents)
-		waiting = false
-	    } else {
-		if (mode == 'WRITE') { // We need to wait as something is using it
-		    wait_time = 60 // a minute
-		    println("${lockname} write locked - sleeping to wait for write lock")
+		if (lockcontents.size() == 0) { // No locks held, we are right in
+		    add_us(lockfile, mode, taskid, lockcontents)
+		    waiting = false
 		} else {
-	            for (s in lockcontents) {
-			def shortmode = s.substring(0,1)
-			def jobname = s.substring(1)
-			if (shortmode == 'W') {
-			    wait_time = 60 // a minute
-			    println("${lockname} write locked - sleeping to wait for read lock")
-			} else {
-			    // Must be all READ locks in the file, we are good to go
-			    add_us(lockfile, mode, taskid, lockcontents)
-			    waiting = false
+		    if (mode == 'WRITE') { // We need to wait as something is using it
+			wait_time = 60 // a minute
+			println("${lockname} write locked - sleeping to wait for write lock")
+		    } else {
+			for (s in lockcontents) {
+			    def shortmode = s.substring(0,1)
+			    def jobname = s.substring(1)
+			    if (shortmode == 'W') {
+				wait_time = 60 // a minute
+				println("${lockname} write locked - sleeping to wait for read lock")
+			    } else {
+				// Must be all READ locks in the file, we are good to go
+				add_us(lockfile, mode, taskid, lockcontents)
+				waiting = false
+			    }
 			}
 		    }
 		}
