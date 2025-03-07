@@ -28,8 +28,8 @@ def add_us(String lockfile, String lockmode, String taskid, ArrayList current_co
     write_lockfile(lockfile, current_contents)
 }
 
-// Called in post{always{}} (via call(,,UNLOCK,) to clear all locks for this job
-def unlock_all_ours(String lockname, String lockfile, String taskid)
+// Called in post{always{}} (via call(,,UNLOCK,) to clear lock for this job
+def unlock_ours(String lockname, String lockfile, String taskid)
 {
     lock(lockname) {
 	node('built-in') {
@@ -37,13 +37,13 @@ def unlock_all_ours(String lockname, String lockfile, String taskid)
 	    def delete_list = []
 	    def lockcontents = read_lockfile(lockfile)
 	    for (s in lockcontents) {
-		if (s.substring(1, s.len()) == taskid)
+		if (s.substring(1) == taskid)
 		    delete_list += s
 	    }
-	    new_list = lockcontents.minus(delete_list)
+	    def new_list = lockcontents.minus(delete_list)
 
 	    // Write it back
-	    write_lockfile(lockfile, current_contents)
+	    write_lockfile(lockfile, new_list)
 	}
     }
 }
@@ -77,7 +77,7 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 
     // Called at end of pipeline in case of 'accidents'
     if (mode == 'UNLOCK') {
-	unlock_all_ours(lockname, lockfile, taskid)
+	unlock_ours(lockname, lockfile, taskid)
 	return
     }
 
@@ -119,7 +119,7 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 		} else {
 	            for (s in lockcontents) {
 			def shortmode = s.substring(0,1)
-			def jobname = s.substring(1, s.length())
+			def jobname = s.substring(1)
 			if (shortmode == 'W') {
 			    wait_time = 60 // a minute
 			    println("${lockname} write locked - sleeping to wait for read lock")
@@ -188,7 +188,7 @@ def call(Map info, String lockname, String lockmode)
 
 			    // Look for it in the lockfile
 			    for (s in lockcontents) {
-				def joburl = s.substring(1, s.length())
+				def joburl = s.substring(1)
 				if (curjoburl == joburl) {
 				    found = true; // Job is not running, remove it
 				    deletelist += s
