@@ -58,15 +58,17 @@ def unlock_ours(String lockname, String lockfile, String taskid)
 // or (for a write lock) just one line, eg
 //  Whttps://my.jenkins.example.com/job/my-gay-job/69
 //
-// Access to this file is serialsed using normal Jenkins lock(){}
+// Access to this file is serialised using normal Jenkins lock(){}
 // blocks, and jobs poll for access to the file - so don't cane the system!
 //
-// if called with UNLOCK as the lock mode then ALL of the locks held by
+// If called with UNLOCK as the lock mode then ALL of the locks held by
 // this job will be released, this is here so it can be called in post{always{}}
 // to catch job failures/aborts and clean up. There is also a polymorphic
-// version, 'UNLOCKALL' that can be called to check for inactive locks and tidy them up.
+// version, 'UNLOCKALL' that can be called to check for inactive locks in completed
+// jobs and clean them up.
 
-// NOTE: Don't disturb the types (ArrayList,String) in here, they're very carefully worked out
+// NOTE: Don't disturb the explicit types (ArrayList, String) in here, they're
+// needed and very carefully worked out
 def call(Map info, String lockname, String mode, Closure thingtorun)
 {
     def lockdir = "${JENKINS_HOME}/locks/"
@@ -158,7 +160,7 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 }
 
 // Polymorph to tidy up inactive jobs for a lock,
-// lockmode must be 'UNLOCKALL' - this is just documentation reasons.
+// lockmode must be 'UNLOCKALL' - this is just for documentation reasons.
 // Of course, if the system is quiescent you can just delete the file!
 def call(Map info, String lockname, String lockmode)
 {
