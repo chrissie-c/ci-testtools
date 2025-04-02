@@ -28,7 +28,8 @@ def add_us(String lockfile, String lockmode, String taskid, ArrayList current_co
     write_lockfile(lockfile, current_contents)
 }
 
-// Called in post{always{}} (via call(,,UNLOCK,) to clear lock for this job
+// Unlock all our locks from a lockfile
+@NonCPS
 def unlock_ours(String lockname, String lockfile, String taskid)
 {
     lock(lockname) {
@@ -37,8 +38,10 @@ def unlock_ours(String lockname, String lockfile, String taskid)
 	    def delete_list = []
 	    def ArrayList lockcontents = read_lockfile(lockfile)
 	    for (s in lockcontents) {
-		if (s.substring(1) == taskid)
+		if (s.substring(1) == taskid) {
 		    delete_list += s
+		    println("Unlocking ${s} from ${lockfile}")
+		}
 	    }
 	    def ArrayList new_list = lockcontents.minus(delete_list)
 
@@ -67,8 +70,8 @@ def unlock_ours(String lockname, String lockfile, String taskid)
 // version, 'UNLOCKALL' that can be called to check for inactive locks in completed
 // jobs and clean them up.
 
-// NOTE: Don't disturb the explicit types (ArrayList, String) in here, they're
-// needed and very carefully worked out
+// NOTE: Don't disturb the explicit types (ArrayList, String) without extensive testing
+//
 def call(Map info, String lockname, String mode, Closure thingtorun)
 {
     def lockdir = "${JENKINS_HOME}/locks/"
@@ -79,7 +82,7 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 
     // Called at end of pipeline in case of 'accidents'
     if (mode == 'UNLOCK') {
-	unlock_ours(lockname, lockfile, taskid)
+	unlock_all_our_locks(info)
 	return
     }
 
@@ -116,14 +119,14 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 		} else {
 		    if (mode == 'WRITE') { // We need to wait as something is using it
 			wait_time = 60 // a minute
-			println("${lockname} write locked - sleeping to wait for write lock")
+			println("RWLock ${lockname} write locked - sleeping to wait for write lock")
 		    } else {
 			for (s in lockcontents) {
 			    def shortmode = s.substring(0,1)
 			    def jobname = s.substring(1)
 			    if (shortmode == 'W') {
 				wait_time = 60 // a minute
-				println("${lockname} write locked - sleeping to wait for read lock")
+				println("RWLock ${lockname} write locked - sleeping to wait for read lock")
 			    } else {
 				// Must be all READ locks in the file, we are good to go
 				add_us(lockfile, mode, taskid, lockcontents)
@@ -136,6 +139,8 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 	}
     }
 
+    println("RWLock ${lockname} acquired")
+    
     // Run the thing
     thingtorun()
 
@@ -155,6 +160,7 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 
 	    // Write it back
 	    write_lockfile(lockfile, newlockcontents)
+	    println("RWLock ${lockname} released")
 	}
     }
 }
@@ -207,11 +213,12 @@ def call(Map info, String lockname, String lockmode)
     }
 }
 
-// Example
-def unlock_everything(Map info)
+// Look for all locks held by this job, and unlock them. (@NonCPS for eachFile())
+@NonCPS
+def unlock_all_our_locks(Map info)
 {
-    def JENKINS_HOME='/home/christine/tmp'
     def String lockdir = "${JENKINS_HOME}/locks/"
+    def taskid = env.BUILD_URL
 
     def lockdir_it = new File(lockdir)
     lockdir_it.eachFile() {
@@ -219,8 +226,9 @@ def unlock_everything(Map info)
 	if (basename.substring(0, 2) == 'F-' &&
 	    basename.substring(basename.length()-6) == '.locks') {
 	    def lockname = basename.substring(2, basename.length()-6)
-	    //call(info, lockname, 'UNLOCKALL')
-	    println("unlocking ${lockname}")
+	    def lockfile = "${lockdir}/F-${lockname}.locks"	    
+	    println("unlocking in ${lockname}")
+	    unlock_ours(lockname, lockfile, taskid)
 	}
     }
 }
