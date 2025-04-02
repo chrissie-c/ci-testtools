@@ -29,7 +29,6 @@ def add_us(String lockfile, String lockmode, String taskid, ArrayList current_co
 }
 
 // Unlock all our locks from a lockfile
-@NonCPS
 def unlock_ours(String lockname, String lockfile, String taskid)
 {
     lock(lockname) {
@@ -79,6 +78,8 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
     def taskid = env.BUILD_URL
     def waiting = true
     def wait_time = 0
+
+    println("RWLock for ${lockname} mode ${mode}")
 
     // Called at end of pipeline in case of 'accidents'
     if (mode == 'UNLOCK') {
@@ -214,15 +215,14 @@ def call(Map info, String lockname, String lockmode)
 }
 
 // Look for all locks held by this job, and unlock them. (@NonCPS for eachFile())
-@NonCPS
 def unlock_all_our_locks(Map info)
 {
     def String lockdir = "${JENKINS_HOME}/locks/"
     def taskid = env.BUILD_URL
 
-    def lockdir_it = new File(lockdir)
-    lockdir_it.eachFile() {
-	def basename = it.toString().substring(lockdir.length())
+    def lockdirlist = new File(lockdir).listFiles()
+    for (f in lockdirlist) {
+	def basename = f.toString().substring(lockdir.length())
 	if (basename.substring(0, 2) == 'F-' &&
 	    basename.substring(basename.length()-6) == '.locks') {
 	    def lockname = basename.substring(2, basename.length()-6)
