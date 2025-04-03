@@ -66,7 +66,6 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
     // This MUST run on the Jenkins host, that's where the flocks are
     node('built-in') {
 	sh "mkdir -p ${lockdir}"
-	lockmode |= 4 // LOCK_NB (no blocking - so the job doesn't seem to "die" according to jenkins
 
 	def lockfd = info['lockfd'] = jnaflock.CLibrary.INSTANCE.creat("${lockdir}/${lockname}.lock", 0666)
 	if (lockfd == -1) {
@@ -74,23 +73,9 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 	    return -1
 	}
 	println("RWLock: FD for lock ${lockname} is ${lockfd}")
-
-	def wait_time = 0
-	def waiting = true
-	while (waiting) {
-	    sleep(wait_time)
-	    if (jnaflock.CLibrary.INSTANCE.flock(lockfd, lockmode) == -1) {
-		def e = Native.getLastError()
-		if (e == 11) { // 11 = EAGAIN
-		    wait_time = 60
-		    println("Waiting for lock ${lockname}")
-		} else {
-		    throw(new Exception("RWLock: Failed to 'flock' file for lock ${lockdir}/${lockname} at ${lockmode}, ${e}"))
-		    return -1
-		}
-	    } else {
-		waiting = false // We have the lock
-	    }
+	if (jnaflock.CLibrary.INSTANCE.flock(lockfd, lockmode) == -1) {
+	    throw(new Exception("RWLock: Failed to 'flock' file for lock ${lockdir}/${lockname} at ${lockmode}"))
+	    return -1
 	}
 	info['lockfd'] = lockfd
 	info['lockname'] = lockname // Save it in case of errors later
