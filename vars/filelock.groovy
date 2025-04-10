@@ -29,7 +29,7 @@ def add_us(String lockfile, String lockmode, String taskid, ArrayList current_co
 }
 
 // Unlock all our locks from a lockfile
-def unlock_ours(String lockname, String lockfile, String taskid)
+def unlock_ours(String lockname, String lockfile, String taskid_base)
 {
     lock(lockname) {
 	node('built-in') {
@@ -37,7 +37,7 @@ def unlock_ours(String lockname, String lockfile, String taskid)
 	    def delete_list = []
 	    def ArrayList lockcontents = read_lockfile(lockfile)
 	    for (s in lockcontents) {
-		if (s.substring(1) == taskid) {
+		if (s.substring(1, taskid_base.length()) == taskid_base) {
 		    delete_list += s
 		    println("Unlocking ${s} from ${lockfile}")
 		}
@@ -49,6 +49,18 @@ def unlock_ours(String lockname, String lockfile, String taskid)
 	}
     }
 }
+
+// Global unlock polymorph. mode MUST be 'UNLOCK'
+def call(Map info, String mode)
+{
+    if (mode != 'UNLOCK') {
+	println('RWLock: unlock polymorph called without UNLOCK')
+    } else {
+	do_unlock_all_our_locks(info)
+    }
+}
+
+
 
 // File-based locking
 //
@@ -71,11 +83,11 @@ def unlock_ours(String lockname, String lockfile, String taskid)
 
 // NOTE: Don't disturb the explicit types (ArrayList, String) without extensive testing
 //
-def call(Map info, String lockname, String mode, Closure thingtorun)
+def call(Map info, String lockname, String mode, String stagename, Closure thingtorun)
 {
     def lockdir = "${JENKINS_HOME}/locks/"
     def lockfile = "${lockdir}/F-${lockname}.locks"
-    def taskid = env.BUILD_URL
+    def taskid = "${env.BUILD_URL}#${stagename}"
     def waiting = true
     def wait_time = 0
 
@@ -141,7 +153,7 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
     }
 
     println("RWLock ${lockname} acquired")
-    
+
     // Run the thing
     thingtorun()
 
@@ -153,7 +165,7 @@ def call(Map info, String lockname, String mode, Closure thingtorun)
 	    // If we have a READ lock, we need to re-read the file in case other readers have appeared
 	    if (mode == 'READ') {
 		def ArrayList lockcontents = read_lockfile(lockfile)
-		def our_line = [ mode.substring(0,1)+taskid ]
+		def our_line = [ mode.substring(0,1)+taskid]
 
 		// Remove us from the list
 		newlockcontents = lockcontents.minus(our_line)
@@ -214,21 +226,23 @@ def call(Map info, String lockname, String lockmode)
     }
 }
 
-// Look for all locks held by this job, and unlock them. (@NonCPS for eachFile())
+// Look for all locks held by this job, and unlock them.
 def unlock_all_our_locks(Map info)
 {
     def String lockdir = "${JENKINS_HOME}/locks/"
-    def taskid = env.BUILD_URL
+    def taskid_base = env.BUILD_URL
 
+    // Make the list first otherwise so much has to be @NoNCPS and that's not viable
     def lockdirlist = new File(lockdir).listFiles()
+
     for (f in lockdirlist) {
 	def basename = f.toString().substring(lockdir.length())
 	if (basename.substring(0, 2) == 'F-' &&
 	    basename.substring(basename.length()-6) == '.locks') {
 	    def lockname = basename.substring(2, basename.length()-6)
-	    def lockfile = "${lockdir}/F-${lockname}.locks"	    
+	    def lockfile = "${lockdir}/F-${lockname}.locks"
 	    println("unlocking in ${lockname}")
-	    unlock_ours(lockname, lockfile, taskid)
+	    unlock_ours(lockname, lockfile, taskid_base)
 	}
     }
 }
