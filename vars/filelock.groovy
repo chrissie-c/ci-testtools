@@ -230,9 +230,9 @@ def call(Map info, String lockname, String lockmode)
 def unlock_all_our_locks(Map info)
 {
     def String lockdir = "${JENKINS_HOME}/locks/"
-    def taskid_base = env.BUILD_URL
+    def taskid_base = env.BUILD_URL // The whole job
 
-    // Make the list first otherwise so much has to be @NoNCPS and that's not viable
+    // Get the file list first otherwise so much has to be @NonCPS and that's not viable
     def lockdirlist = new File(lockdir).listFiles()
 
     for (f in lockdirlist) {
@@ -241,7 +241,7 @@ def unlock_all_our_locks(Map info)
 	    basename.substring(basename.length()-6) == '.locks') {
 	    def lockname = basename.substring(2, basename.length()-6)
 	    def lockfile = "${lockdir}/F-${lockname}.locks"
-	    println("unlocking in ${lockname}")
+	    println("unlocking in ${lockname} for ${taskid_base}")
 	    unlock_ours(lockname, lockfile, taskid_base)
 	}
     }
