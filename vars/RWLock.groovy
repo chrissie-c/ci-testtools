@@ -1,134 +1,114 @@
-// Provide READ/WRITE locking in Jenkins, using flock over jna
-import com.sun.jna.Library;
-import com.sun.jna.Native;
-import com.sun.jna.Platform;
+import org.jenkinsci.plugins.lockable_resources.LockableResourcesManager
+import org.jenkinsci.plugins.lockable_resources.locks.LockMode
+import org.jenkinsci.plugins.lockable_resources.queue.QueuedContext
 
-class jnaflock {
-    // com.sun.jna.Library need to be named explicity for some reason.
-    interface CLibrary extends com.sun.jna.Library {
-	CLibrary INSTANCE = (CLibrary)Native.load("c", CLibrary.class);
+/**
+ * Provides read/write locking functionality for Jenkins jobs using the Lockable Resources plugin.
+ */
+class RWLock {
+    final String lockName
+    final String mode
+    final Map<String, Boolean> flags = [:]
+    QueuedContext context = null
 
-	int creat(String file, int mode);
-	int flock(int fd, int mode);
-	int close(int fd);
-    }
-}
-
-// Normal single unlock
-def do_unlock_one(Map info, String lockname_info)
-{
-    if (jnaflock.CLibrary.INSTANCE.flock(info[lockname_info]['fd'], 8) == -1) { // 8 = LOCK_UNLOCK
-	println("RWLock: unlock failed for ${info[lockname_info]['name']} in stage ${info[lockname_info]['stage']} on fd ${info[lockname_info]['fd']}")
-	// Don't return yet, still try to close the file
-    }
-    if (jnaflock.CLibrary.INSTANCE.close(info[lockname_info]['fd']) == -1) {
-	println("RWLock: close failed for ${info[lockname_info]['name']} in stage ${info[lockname_info]['stage']} on fd ${info[lockname_info]['fd']}")
-	return -1
-    }
-    println("RWLock: on ${info[lockname_info]['name']} in stage ${info[lockname_info]['stage']}, fd ${info[lockname_info]['fd']} released")
-    info.remove(lockname_info)
-}
-
-// Unlock all held locks
-def do_unlock_all(Map info)
-{
-    node('built-in') {
-	for (def i in info) {
-	    if (i.key.startsWith('lockfd_')) {
-		println("RWLock: unlock_all Unlocking ${i.key}")
-		do_unlock_one(info, i.key)
-	    }
-	}
-    }
-    return 0
-}
-
-
-// Global unlock polymorph. mode MUST be 'UNLOCK'
-def call(Map info, String mode)
-{
-    if (mode != 'UNLOCK') {
-	println('RWLock: unlock polymorph called without UNLOCK')
-    } else {
-	do_unlock_all(info)
-    }
-}
-
-// info       - the global info[:] array of the job - we store the lock FDs in here
-// lockname   - name of the lock to get (a file in $JENKINS_HOME/locks/)
-// mode       - READ or WRITE
-// stagename  - a string that must be unique in this job. it is used to identify lock FDs in info[:]
-// thingtorun - a closure to run with the lock held
-def call(Map info, String lockname, String mode, String stagename, Closure thingtorun)
-{
-    def lockdir = "${JENKINS_HOME}/locks"
-    def lockmode = 0
-    def lockname_info = "lockfd_${stagename}_${lockname}".replace('-','_')
-
-    if (mode == 'READ') {
-	lockmode = 1 // LOCK_SH
-    }
-    if (mode == 'WRITE') {
-	lockmode = 2 // LOCK_EX
-    }
-    // Normally this doesn't need to be called as the closure in 'thingtorun' is
-    // run then the lock is cleared. This is for post{always{}} to tidy up
-    // in case of 'accidents'
-    if (mode == 'UNLOCK') {
-	return do_unlock_all(info)
-    }
-    if (lockmode == 0) {
-	throw(new Exception("RWLock: Unknown lock mode ${mode}"))
-	return -1
+    /**
+     * Constructor for the RWLock.
+     * @param lockName The name of the lockable resource. Ensure this name is consistent across jobs.
+     * @param mode The desired lock mode: 'read' or 'write'.
+     * @param flags A map of optional flags (currently not used in this basic implementation).
+     * @throws IllegalArgumentException if the mode is invalid.
+     */
+    RWLock(String lockName, String mode, Map<String, Boolean> flags = [:]) {
+        if (!['read', 'write'].contains(mode.toLowerCase())) {
+            throw new IllegalArgumentException("Invalid lock mode: ${mode}. Must be 'read' or 'write'.")
+        }
+        this.lockName = lockName
+        this.mode = mode.toLowerCase()
+        this.flags.putAll(flags)
     }
 
-    // Of course, this needs to be after the UNLOCK check
-    if (info.containsKey(lockname_info) && info[lockname_info]['fd'] >= 0) {
-	throw(new Exception("RWLock: Request in stage ${stagename} for lock ${lockname}, while lock on fd ${info[lockname_info]['fd']} already held (only 1 lock allowed at a time)"))
-	return -1
+    /**
+     * Acquires the lock based on the specified mode.
+     * @return true if the lock was acquired successfully, false otherwise (if non-blocking).
+     * @throws Exception if there's an issue acquiring the lock.
+     */
+    boolean acquire() {
+        LockableResourcesManager lrm = LockableResourcesManager.get()
+        def resource = lrm.fromName(lockName)
+
+        if (!resource) {
+            // Automatically create the resource if it doesn't exist
+            try {
+                lrm.create(lockName, "", null) // Description can be empty, labels null for simplicity
+                resource = lrm.fromName(lockName)
+                println "Created Lockable Resource: ${lockName}"
+            } catch (Exception e) {
+                println "Error creating Lockable Resource '${lockName}': ${e.getMessage()}"
+                throw e
+            }
+        }
+
+        LockMode lockMode = (mode == 'write') ? LockMode.EXCLUSIVE : LockMode.SHARED
+
+        try {
+            context = lrm.queue(resource.name, 0, lockMode, null) // 0 timeout means wait indefinitely
+            context.acquire()
+            println "Acquired ${mode} lock for resource: ${lockName}"
+            return true
+        } catch (Exception e) {
+            println "Error acquiring ${mode} lock for resource '${lockName}': ${e.getMessage()}"
+            return false // Or potentially re-throw depending on desired behavior
+        }
     }
 
-    // This MUST run on the Jenkins host, that's where the flocks are
-    node('built-in') {
-	sh "mkdir -p ${lockdir}"
-	lockmode |= 4 // LOCK_NB (no blocking - so the job doesn't seem to "die" according to jenkins
+    /**
+     * Acquires the lock with a specified timeout.
+     * @param timeoutSeconds The maximum time to wait for the lock in seconds.
+     * @return true if the lock was acquired successfully within the timeout, false otherwise.
+     * @throws Exception if there's an issue acquiring the lock.
+     */
+    boolean acquire(int timeoutSeconds) {
+        LockableResourcesManager lrm = LockableResourcesManager.get()
+        def resource = lrm.fromName(lockName)
 
-	def lockfd = jnaflock.CLibrary.INSTANCE.creat("${lockdir}/${lockname}.lock", 0666)
-	if (lockfd == -1) {
-	    throw(new Exception("RWLock: Failed to 'creat' file for lock ${lockdir}/${lockname}"))
-	    return -1
-	}
-	println("RWLock: FD for lock ${lockname} in stage ${stagename} is ${lockfd}")
+        if (!resource) {
+            try {
+                lrm.create(lockName, "", null)
+                resource = lrm.fromName(lockName)
+                println "Created Lockable Resource: ${lockName}"
+            } catch (Exception e) {
+                println "Error creating Lockable Resource '${lockName}': ${e.getMessage()}"
+                throw e
+            }
+        }
 
-	def wait_time = 0
-	def waiting = true
-	while (waiting) {
-	    sleep(wait_time)
-	    if (jnaflock.CLibrary.INSTANCE.flock(lockfd, lockmode) == -1) {
-		def e = Native.getLastError()
-		if (e == 11) { // 11 = EAGAIN
-		    wait_time = 60
-		    println("Waiting for lock ${lockname}")
-		} else {
-		    throw(new Exception("RWLock: Failed to 'flock' file for lock ${lockdir}/${lockname} at ${lockmode}, ${e}"))
-		    return -1
-		}
-	    } else {
-		waiting = false // We have the lock
-	    }
-	}
-	info[lockname_info] = [:]
-	info[lockname_info]['fd'] = lockfd
-	info[lockname_info]['name'] = lockname
-	info[lockname_info]['stage'] = stagename
-	println("RWLock: ${lockname} in stage ${stagename} locked for ${mode}")
+        LockMode lockMode = (mode == 'write') ? LockMode.EXCLUSIVE : LockMode.SHARED
+
+        try {
+            context = lrm.queue(resource.name, timeoutSeconds, lockMode, null)
+            boolean acquired = context.acquire()
+            if (acquired) {
+                println "Acquired ${mode} lock for resource: ${lockName}"
+            } else {
+                println "Failed to acquire ${mode} lock for resource: ${lockName} within ${timeoutSeconds} seconds."
+            }
+            return acquired
+        } catch (Exception e) {
+            println "Error acquiring ${mode} lock for resource '${lockName}': ${e.getMessage()}"
+            return false
+        }
     }
 
-    // Run a thing inside the lock
-    thingtorun()
-
-    // Tidy up
-    do_unlock_one(info, lockname_info)
-
-    return 0
+    /**
+     * Releases the acquired lock.
+     */
+    void release() {
+        if (context) {
+            context.release()
+            println "Released ${mode} lock for resource: ${lockName}"
+            context = null
+        } else {
+            println "Warning: Attempted to release lock '${lockName}' but it was not acquired by this instance."
+        }
+    }
 }
