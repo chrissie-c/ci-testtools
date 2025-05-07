@@ -1,6 +1,6 @@
-import org.jenkinsci.plugins.lockable_resources_plugin.LockableResourcesManager
-import org.jenkinsci.plugins.lockable_resources_plugin.locks.LockMode
-import org.jenkinsci.plugins.lockable_resources_plugin.queue.QueuedContext
+import org.jenkins.plugins.lockableresources.LockableResourcesManager
+import org.jenkins.plugins.lockableresources.locks.LockMode
+import org.jenkins.plugins.lockableresources.queue.QueuedContext
 
 /**
  * Provides read/write locking functionality for Jenkins jobs using the Lockable Resources plugin.
