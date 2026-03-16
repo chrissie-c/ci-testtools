@@ -20,5 +20,5 @@ def call (Map info, String logfile, Closure cmd)
     } else {
 	new_logfile = "SUCCESS_${logfile}"
     }
-    sh "mv ${logfile} ${new_logfile}
+    sh "mv ${logfile} ${new_logfile}"
 }
