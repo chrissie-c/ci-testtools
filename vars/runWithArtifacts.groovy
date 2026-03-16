@@ -20,10 +20,10 @@ def call (Map info, String logfile, Closure cmd)
 	if (!info.containsKey('failedlogs')) {
 	    info['failedlogs'] = []
 	}
-	info['failedlogs'] += "FAILED_${stagestate['logfile']}"
+	info['failedlogs'] += "$(new_logfile}"
     } else {
 	new_logfile = "SUCCESS_${logfile}"
     }
     sh "mv ${logfile} ${new_logfile}"
-    archiveArtifacts artifacts: "FAILED_${stagestate['logfile']}", fingerprint: false    
+    archiveArtifacts artifacts: "${new_logfile}", fingerprint: false    
 }
