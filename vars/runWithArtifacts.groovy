@@ -20,7 +20,7 @@ def call (Map info, String logfile, Closure cmd)
 	if (!info.containsKey('failedlogs')) {
 	    info['failedlogs'] = []
 	}
-	info['failedlogs'] += "$(new_logfile}"
+	info['failedlogs'] += "${new_logfile}"
     } else {
 	new_logfile = "SUCCESS_${logfile}"
     }
