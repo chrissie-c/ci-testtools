@@ -1,11 +1,12 @@
 
-
-
 // Run a groovy Closure and store the results in an artifact
+// Rethrows any exceptions
 def call (Map info, String logfile, Closure cmd)
 {
     def failed = 0
     def new_logfile = ''
+    def caught_exception = null
+
     try {
 	tee (logfile) {
 	    cmd()
@@ -13,6 +14,7 @@ def call (Map info, String logfile, Closure cmd)
     }
     catch (e) {
 	failed = 1
+	caught_exception = e
     }
     if (failed == 1) {
 	new_logfile = "FAILED_${logfile}"
@@ -25,5 +27,9 @@ def call (Map info, String logfile, Closure cmd)
 	new_logfile = "SUCCESS_${logfile}"
     }
     sh "mv ${logfile} ${new_logfile}"
-    archiveArtifacts artifacts: "${new_logfile}", fingerprint: false    
+    archiveArtifacts artifacts: "${new_logfile}", fingerprint: false
+
+    if (failed) {
+	throw (caught_exception)
+    }
 }
