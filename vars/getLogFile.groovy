@@ -4,7 +4,9 @@
 def call()
 {
     println("in getLogFile")
-    def r = Jenkins.instance.getAllItems(Job).each {
-       	println(it)
-    }
+
+    def run = currentBuild.rawBuild
+
+    println(run)
+    println(run.getArtifactsDir());
 }
