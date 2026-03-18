@@ -4,7 +4,7 @@
 def call()
 {
     println("in getLogFile")
-    Jenkins.instance.getAllItems(Run).each {
+    def r = Jenkins.instance.getAllItems(Job).each {
        	println(it)
     }
 }
