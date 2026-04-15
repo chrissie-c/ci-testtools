@@ -16,8 +16,7 @@ def call(Map info, ArrayList nodes, Closure fn)
 
     for (def j in jobs) {
 	def job = j // needs to be local to the loop
-	collectBuildEnv[job] = {
-	    runit(info, job, fn)
+	collectBuildEnv[job] = ''
 	}
     }
 
