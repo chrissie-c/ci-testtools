@@ -9,7 +9,7 @@ def runit(Map info, String agentName, Closure fn)
 }
 
 // Generate a run-list
-def call(Map info, ArrayList nodes, Closure fn)
+def call(Map info, ArrayList nodes)
 {
 
     def collectBuildEnv = [:]
@@ -17,7 +17,6 @@ def call(Map info, ArrayList nodes, Closure fn)
     for (def j in jobs) {
 	def job = j // needs to be local to the loop
 	collectBuildEnv[job] = ''
-	}
     }
 
     return collectBuildEnv
