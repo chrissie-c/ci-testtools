@@ -216,9 +216,8 @@ def genAllJobs(String dryrun, String provider_param, Map info, Map prov_failflag
     return new Tuple2(all_matrix, [:])
 }
 
-def stage(String name, Closure a) {a()}
-def lock(String name, Closure a) {a()}
 
+//CC:: - renamed from call() to it's script name for testing
 // Called from parallel to run a list of tests on one node
 // Both 'smoke' and 'all' call here
 def runTestList(Map provider_jobs, Map info, ArrayList joblist, Map failflags, String dryrun)
@@ -291,7 +290,8 @@ def runTestList(Map provider_jobs, Map info, ArrayList joblist, Map failflags, S
     }
 }
 
-// Does what it says on the tin
+// CC:: -- this is the original run_job() from git. for reference
+//  our replacement for testing is below
 def XXrun_job(String provider, Map job, String dryrun, Map info)
 {
     // Allow us to fake failures for testing
@@ -337,9 +337,6 @@ def XXrun_job(String provider, Map job, String dryrun, Map info)
     return new Tuple(status, joburl, detail)
 }
 
-
-import java.nio.file.Files
-import java.nio.file.Paths
 
 def libvirt10_setup()
 {
@@ -516,6 +513,8 @@ def getProviderProperties()
 
     return providers
 }
+
+
 /// ------ test harness below this line
 def run_job(String provider, Map job, String dryrun, Map info)
 {
@@ -529,6 +528,9 @@ def run_job(String provider, Map job, String dryrun, Map info)
 
     return new Tuple(result, 'https://anywhere.but.here/', "just did")
 }
+
+def stage(String name, Closure a) {a()}
+def lock(String name, Closure a) {a()}
 
 // This needs to be global - not def'd
 params = ['failure_rate': '0']
